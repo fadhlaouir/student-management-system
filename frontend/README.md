@@ -29,7 +29,7 @@
 1.  Clone the project from github.
 
 ```bash
-git clone https://github.com/https://github.com/fadhlaouir/student-management-system.git
+git clone https://github.com/fadhlaouir/student-management-system.git
 ```
 
 ### Using manual download ZIP
