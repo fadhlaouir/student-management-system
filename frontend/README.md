@@ -1,12 +1,4 @@
-# Back Office for UFE application
-
-[![Author](http://img.shields.io/badge/author-@rfadhlaoui-blue.svg)](https://tn.linkedin.com/in/fadhlaouiraed)
-
-Back office Developed with React.js, Redux, and ant design for UFE application
-
-## Lighthouse
-
-![image](https://github.com/Orange-Digital-Center-Tunisia/ufe-admin/blob/main/src/assets/lighthouse/performance.png)
+# Back Office for Student Management System
 
 ## Features
 
@@ -37,7 +29,7 @@ Back office Developed with React.js, Redux, and ant design for UFE application
 1.  Clone the project from github.
 
 ```bash
-git clone https://github.com/Orange-Digital-Center-Tunisia/ufe-admin.git
+git clone https://github.com/https://github.com/fadhlaouir/student-management-system.git
 ```
 
 ### Using manual download ZIP
@@ -48,7 +40,7 @@ git clone https://github.com/Orange-Digital-Center-Tunisia/ufe-admin.git
 ### Install npm dependencies after installing (Git or manual download)
 
 ```bash
-cd ufe-admin
+cd frontend
 npm install
 ```
 
