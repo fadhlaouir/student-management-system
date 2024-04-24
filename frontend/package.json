@@ -1,0 +1,82 @@
+{
+  "name": "student-management-admin",
+  "version": "0.0.0",
+  "private": true,
+  "proxy": "http://localhost:3000",
+  "license": "ISC",
+  "dependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "@manaflair/redux-batch": "^1.0.0",
+    "@reduxjs/toolkit": "^1.7.2",
+    "antd": "^4.20.5",
+    "antd-form-builder": "^2.1.4",
+    "axios": "^0.26.0",
+    "jwt-decode": "^3.1.2",
+    "moment-timezone": "^0.5.34",
+    "prop-types": "^15.8.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-highlight-words": "^0.17.0",
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.1.2",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
+    "serve": "^13.0.2",
+    "standard-version": "^9.3.2",
+    "voca": "^1.4.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "^2.24.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-mdx": "^1.8.2",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.29.3",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^8.0.0",
+    "prettier": "^2.1.2",
+    "react-scripts": "^5.0.1"
+  },
+  "scripts": {
+    "develop": "react-scripts start",
+    "build": "react-scripts build",
+    "start": "serve -s build",
+    "heroku-postbuild": "npm run build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint:check": "eslint --ext .js ./",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "lint:fix": "eslint --ext .js ./ --fix",
+    "format:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "release": "standard-version",
+    "release-minor": "standard-version --release-as minor",
+    "release-major": "standard-version --release-as major",
+    "release-dry": "standard-version --dry-run",
+    "prepare": "husky install",
+    "prepush": "npm run format:fix && npm run lint:check && npm run format:check"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=14.16.0 <=16.20.2",
+    "npm": ">=6.14.11 <=8.19.4"
+  }
+}

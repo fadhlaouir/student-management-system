@@ -1,0 +1,38 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "airbnb-base",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended",
+    "plugin:mdx/recommended"
+  ],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "max-len": ["warn", { "code": 120 }],
+    "arrow-parens": ["warn", "always"],
+    "arrow-body-style": "off",
+    "camelcase": "warn",
+    "no-underscore-dangle": "off",
+    "no-param-reassign": "warn",
+    "no-unused-vars": "warn",
+    "class-methods-use-this": "warn",
+    "prefer-destructuring": "warn",
+    "prefer-const": "warn",
+    "no-shadow": "warn",
+    "no-empty": "warn",
+    "import/prefer-default-export": "off",
+    "import/no-cycle": "warn",
+    "react/jsx-first-prop-new-line": [1, "multiline"],
+    "quotes": [2, "single", { "avoidEscape": true }]
+  }
+}

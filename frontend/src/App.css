@@ -1,0 +1,219 @@
+/* ---------------------------- ANT DESIGN LAYOUT --------------------------- */
+
+@import "antd/dist/antd.css";
+
+
+
+.ant-layout-footer {
+    background-color: white !important;
+}
+
+.ant-layout-content,
+.main-layout-content {
+    padding: 20px !important;
+    background-color: white !important;
+}
+
+.ant-table-wrapper {
+    clear: both;
+    max-width: 100%;
+    margin-top: 30px !important;
+}
+
+
+/* ---------------------------- ANT DESIGN MODAL ---------------------------- */
+
+.ant-modal-content,
+.ant-modal-header {
+    border-radius: 20px !important;
+}
+
+
+/* ---------------------------- ANT DESIGN BUTTON --------------------------- */
+
+.ant-btn-primary {
+    background-color: black !important;
+    border: none !important;
+    border-radius: 4px !important;
+}
+
+
+/* ---------------------------- ANT DESIGN UPLOAD --------------------------- */
+
+
+/* tile uploaded pictures */
+
+.upload-list-inline .ant-upload-list-item {
+    float: left;
+    width: 200px;
+    margin-right: 8px;
+}
+
+.upload-list-inline [class*='-upload-list-rtl'] .ant-upload-list-item {
+    float: right;
+}
+
+.ant-typography mark {
+    background-color: #94be2a !important;
+    color: #fff !important;
+}
+
+
+/* ------------------------------ COSTUM STYLE ------------------------------ */
+
+.mr {
+    margin-left: 20px !important;
+}
+
+.mt {
+    margin-top: 20px !important;
+}
+
+.mt-0 {
+    margin-top: 0px !important;
+    padding-top: 0px !important;
+}
+
+.mb-0 {
+    margin-bottom: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.mb-10 {
+    margin-bottom: 10px !important;
+}
+
+.fluid {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.gap-5 {
+    gap: 5px !important;
+}
+
+/* ------------------------------ COUNTRY INPUT ----------------------------- */
+
+input#phoneNumber.PhoneInputInput {
+    font-variant: tabular-nums;
+    list-style: none;
+    font-feature-settings: 'tnum', "tnum";
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    min-width: 0;
+    padding: 4px 11px;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 14px;
+    line-height: 1.5715;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #d9d9d9;
+    transition: all 0.3s;
+    border-radius: 5px !important;
+}
+
+input#phoneNumber.PhoneInputInput:hover,
+input#phoneNumber.PhoneInputInput:focus {
+    border-color: #94be2a;
+    box-shadow: 0 0 0 2px rgb(24 144 255 / 20%);
+    border-right-width: 1px !important;
+    outline: 0;
+}
+
+
+/* ---------------------------- ANT DESIGN INPUT ---------------------------- */
+
+@media screen and (min-width: 850px) {
+    .ant-list-item-meta-description {
+        white-space: nowrap !important;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .home-statistic {
+        text-align: center !important;
+    }
+}
+
+.ant-input-password,
+.ant-input {
+    border-radius: 5px !important;
+}
+
+.ant-typography {
+    color: #3a3a3a !important;
+}
+
+.ant-input-number,
+.ant-input-number-input {
+    width: 100% !important;
+}
+
+.ant-picker-focused, .ant-input-password:focus, .ant-input:focus, .ant-input-focused {
+    border-color: black;
+    box-shadow: 0 0 0 1px #94be2a;
+    border-right-width: 1px !important;
+    outline: 0;
+}
+
+.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover,
+.ant-input:hover, .ant-picker:hover {
+    border-color: black;
+    border-right-width: 1px !important;
+}
+
+
+/* ----------------------------- ANT DESIGN TABS ---------------------------- */
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: black !important;
+}
+
+.ant-tabs-ink-bar {
+    position: absolute;
+    background: black;
+    pointer-events: none;
+}
+
+.ant-tabs-tab:hover {
+    color: black !important;
+}
+
+
+/* ---------------------------------- ICONS --------------------------------- */
+
+.ant-menu-inline.ant-menu-root .ant-menu-item>*,
+.ant-menu-inline.ant-menu-root .ant-menu-submenu-title>* {
+    width: 20px !important;
+}
+
+
+/* --------------------------------- IMAGES --------------------------------- */
+
+.max-img-height {
+    height: 300px !important;
+    width: 100% !important;
+}
+
+/* ---------------------------------- DATE ---------------------------------- */
+.ant-picker-range {
+    width: 100% !important;
+}
+
+
+/* -------------------------------- TEXTAREA -------------------------------- */
+
+.demo-editor {
+    border: 1px solid #d9d9d9;
+    border-radius: 5px !important;
+    height: auto !important;
+}
+
+.not-validated {
+    border: 1px solid red;
+}

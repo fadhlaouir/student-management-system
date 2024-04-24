@@ -1,0 +1,16 @@
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    height: 60vh;
+}
+
+.ant-spin-text,
+.ant-spin-dot-item {
+    background-color: #06022E !important;
+}
+
+.loader-spin {
+    font-size: 200px
+}
