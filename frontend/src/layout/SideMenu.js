@@ -1,16 +1,22 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import HOME from '../assets/icons/home-icon.svg';
-import USERS from '../assets/icons/users-icon.svg';
-import ARTICALES from '../assets/icons/article-icon.svg';
+import {
+  HomeOutlined,
+  FileTextOutlined,
+  TeamOutlined,
+  UsergroupAddOutlined,
+  SolutionOutlined,
+  ShopOutlined,
+} from '@ant-design/icons';
 import './index.css';
 
+const { Sider } = Layout;
+
 function SideMenu() {
-  const { Sider } = Layout;
   const location = useLocation();
   const history = useHistory();
-  const windowWidthRef = useRef(window.innerWidth);
+  const [collapsed, setCollapsed] = useState(false);
 
   const routes = useMemo(
     () => [
@@ -18,37 +24,37 @@ function SideMenu() {
         key: '1',
         path: '/acceuil',
         name: 'Accueil',
-        icon: <img src={HOME} alt="Liste des encadrants" />,
+        icon: <HomeOutlined />,
       },
       {
         key: '2',
         path: '/supervisors',
         name: 'Liste des encadrants',
-        icon: <img src={USERS} alt="Liste des encadrants" />,
+        icon: <TeamOutlined />,
       },
       {
         key: '3',
         path: '/interns',
         name: 'Liste des stagiaires',
-        icon: <img src={USERS} alt="home" />,
+        icon: <UsergroupAddOutlined />,
       },
       {
         key: '4',
         path: '/managers',
         name: 'Liste des managers',
-        icon: <img src={USERS} alt="home" />,
+        icon: <SolutionOutlined />,
       },
       {
         key: '5',
         path: '/companies',
         name: 'Liste des sociétés',
-        icon: <img src={USERS} alt="home" />,
+        icon: <ShopOutlined />,
       },
       {
         key: '6',
         path: '/internship-offers',
         name: 'Demandes de stage',
-        icon: <img src={ARTICALES} alt="home" />,
+        icon: <FileTextOutlined />,
       },
     ],
     [],
@@ -64,31 +70,30 @@ function SideMenu() {
     history.push(clicked.path);
   };
 
-  const handleResize = () => {
-    windowWidthRef.current = window.innerWidth;
+  // eslint-disable-next-line no-shadow
+  const handleCollapse = (collapsed) => {
+    setCollapsed(collapsed);
   };
 
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
   return (
-    <>
-      {windowWidthRef.current > 850 && (
-        <Sider id="sider-menu">
-          <Menu defaultSelectedKeys={['0']} selectedKeys={[selectedKey]} mode="inline" onClick={onClickMenu}>
-            {routes.map((item) => (
-              <Menu.Item icon={item.icon} key={item.key}>
-                <Link to={item.path}>{item.name}</Link>
-              </Menu.Item>
-            ))}
-          </Menu>
-        </Sider>
-      )}
-    </>
+    <Sider
+      id="sider-menu"
+      collapsible
+      collapsed={collapsed}
+      onCollapse={handleCollapse}
+      breakpoint="lg"
+      collapsedWidth="0"
+      trigger={null}
+    >
+      <div className="logo" />
+      <Menu theme="light" mode="inline" defaultSelectedKeys={['1']} selectedKeys={[selectedKey]} onClick={onClickMenu}>
+        {routes.map((item) => (
+          <Menu.Item key={item.key} icon={item.icon}>
+            <Link to={item.path}>{item.name}</Link>
+          </Menu.Item>
+        ))}
+      </Menu>
+    </Sider>
   );
 }
 
