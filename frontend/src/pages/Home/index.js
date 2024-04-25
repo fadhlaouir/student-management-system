@@ -16,6 +16,7 @@ import Loader from '../../shared/Components/Loader';
 import { fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
 import { fetchAllCompanies, selectAllCompanies } from '../../reducers/Companies.slice';
 import { fetchAllInternship, selectAllInternships } from '../../reducers/Internship.slice';
+import { fetchAllInternshipRequest, selectAllInternshipRequests } from '../../reducers/InternshipRequest.slice';
 
 // Consts
 const { Title } = Typography;
@@ -30,6 +31,7 @@ function Home() {
   const users = useSelector(selectAllUsers);
   const companies = useSelector(selectAllCompanies);
   const internships = useSelector(selectAllInternships);
+  const internshipRequests = useSelector(selectAllInternshipRequests);
   const dispatch = useDispatch();
 
   /* --------------------------------- EFFECT --------------------------------- */
@@ -37,6 +39,7 @@ function Home() {
     dispatch(fetchAllUsers());
     dispatch(fetchAllCompanies());
     dispatch(fetchAllInternship());
+    dispatch(fetchAllInternshipRequest());
     setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -46,6 +49,7 @@ function Home() {
   const USERS = users ? users.users : [];
   const COMPANIES = companies ? companies.companies : [];
   const INTERNSHIPS = internships ? internships.internships : [];
+  const INTERNSHIP_REQUESTS = internshipRequests ?? [];
   const donnees = {
     totalUtilisateurs: USERS?.length,
     totalManagers: USERS?.filter((user) => user.role === 'manager').length,
@@ -53,7 +57,7 @@ function Home() {
     totalSuperviseurs: USERS?.filter((user) => user.role === 'supervisor').length,
     totalEntreprises: COMPANIES?.length,
     totalStages: INTERNSHIPS?.length,
-    totalStagesDemandes: '?',
+    totalStagesDemandes: INTERNSHIP_REQUESTS?.length,
   };
 
   /* -------------------------------- RENDERING ------------------------------- */

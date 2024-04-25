@@ -3,7 +3,7 @@
 /* -------------------------------------------------------------------------- */
 
 // Packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 // Redux
 import { unwrapResult } from '@reduxjs/toolkit';
@@ -14,30 +14,36 @@ import { Table, Row, Col, Button, Modal, notification, Empty, Skeleton } from 'a
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 // reducers
-import { deleteInternship, fetchAllInternship, selectAllInternships } from '../../reducers/Internship.slice';
+import {
+  deleteInternshipRequest,
+  fetchAllInternshipRequest,
+  selectAllInternshipRequests,
+} from '../../reducers/InternshipRequest.slice';
 
 // local components
-import InternshipForm from '../../components/InternshipForm/index';
-import { localMoment } from '../../common/helpers';
+import InternshipRequestForm from '../../components/InternshipRequestForm/index';
+import { selectSessionUser } from '../../reducers/Session.slice';
 
 /* -------------------------------------------------------------------------- */
 /*                               Internship Page                              */
 /* -------------------------------------------------------------------------- */
-function InternshipPage() {
+function InternshipRequestPage() {
   /* ---------------------------------- HOOKS --------------------------------- */
   const { confirm } = Modal;
   const [loading, setLoading] = useState(true);
   // Selectors
-  const InternshipObject = useSelector(selectAllInternships);
+  const currentUser = useSelector(selectSessionUser);
+  const InternshipRequestObject = useSelector(selectAllInternshipRequests);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchAllInternship());
+    dispatch(fetchAllInternshipRequest());
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, []);
-
+  const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   /**
    *
@@ -45,17 +51,17 @@ function InternshipPage() {
    */
   const removeCompany = (data) => {
     confirm({
-      title: `Voulez-vous vraiment supprimer "${data?.title}"?`,
+      title: 'Voulez-vous vraiment supprimer cette demande ?',
       icon: <ExclamationCircleOutlined />,
       onOk() {
-        dispatch(deleteInternship(data._id))
+        dispatch(deleteInternshipRequest(data._id))
           .then(unwrapResult)
           .then(() => {
             notification.success({
               message: 'Supprimer le stage',
               description: 'le stage à été supprimées avec succès',
             });
-            dispatch(fetchAllInternship());
+            dispatch(fetchAllInternshipRequest());
           })
           .catch((err) =>
             notification.error({
@@ -68,58 +74,54 @@ function InternshipPage() {
   };
 
   /* -------------------------------- CONSTANTS ------------------------------- */
-  const INTERNSHIPS = InternshipObject && InternshipObject.internships;
+
+  const INTERNSHIP_DATA =
+    currentUserRole === 'intern'
+      ? InternshipRequestObject &&
+        InternshipRequestObject?.filter((request) => request.intern._id === currentUser._id).map((request, index) => ({
+          key: index,
+          _id: request?._id,
+          status: request?.status,
+          intern: request?.intern,
+          internship: request?.internship,
+        }))
+      : InternshipRequestObject &&
+        InternshipRequestObject?.map((request, index) => ({
+          key: index,
+          _id: request?._id,
+          status: request?.status,
+          intern: request?.intern,
+          internship: request?.internship,
+        }));
 
   function getFullName(user) {
     return `${user?.firstName} ${user?.lastName}`;
   }
 
-  const INTERNSHIP_DATA = INTERNSHIPS?.map((internship, index) => ({
-    key: index,
-    _id: internship?._id,
-    title: internship?.title,
-    subject: internship?.subject,
-    startDate: internship?.startDate,
-    endDate: internship?.endDate,
-    company: internship?.company,
-    supervisor: internship.supervisor,
-    status: internship?.status,
-  }));
-
   const INTERNSHIP_COLUMN = [
     {
-      title: 'Titre',
-      key: 'title',
-      dataIndex: 'title',
+      title: 'Nom du Stagiare',
+      key: 'intern',
+      dataIndex: 'intern',
+      render: (record) => getFullName(record) || 'Non assigné',
     },
     {
-      title: 'Sujet',
-      key: 'subject',
-      dataIndex: 'subject',
+      title: 'Titre du Stage',
+      key: 'internship',
+      dataIndex: 'internship',
+      render: (record) => record?.title ?? 'Non assigné',
     },
     {
-      title: 'Entreprise',
-      key: 'company',
-      dataIndex: 'company',
-      render: (record) => record?.name || 'Non assigné',
+      title: 'Nom de la société',
+      key: 'internship',
+      dataIndex: 'internship',
+      render: (record) => record?.company?.name ?? 'Non assigné',
     },
     {
-      title: 'Superviseur',
-      key: 'supervisor',
-      dataIndex: 'supervisor',
-      render: (record) => (record.supervisor !== null ? getFullName(record) : 'Non assigné'),
-    },
-    {
-      title: 'Date de début',
-      key: 'startDate',
-      dataIndex: 'startDate',
-      render: (record) => localMoment(record.startDate),
-    },
-    {
-      title: 'Date de fin',
-      key: 'endDate',
-      dataIndex: 'endDate',
-      render: (record) => localMoment(record.endDate),
+      title: "Nom de l'encadrant",
+      key: 'internship',
+      dataIndex: 'internship',
+      render: (record) => getFullName(record?.supervisor) || 'Non assigné',
     },
     {
       title: 'Statut',
@@ -129,8 +131,9 @@ function InternshipPage() {
     {
       render: (record) => (
         <Row align="middle" justify="end">
+          <Col>Show More</Col>
           <Col>
-            <InternshipForm record={record} />
+            <InternshipRequestForm record={record} />
           </Col>
           <Col className="mr">
             <Button type="danger" onClick={() => removeCompany(record)} danger>
@@ -155,13 +158,19 @@ function InternshipPage() {
               imageStyle={{
                 height: 250,
               }}
-              description="aucun stage n'a été trouvée"
+              description="aucun demande de stage n'a été trouvée"
             >
-              <InternshipForm label="Créer un stage" isCreatedForm />
+              {currentUserRole === 'intern' && (
+                <InternshipRequestForm label="Créer un demande de stage" isCreatedForm />
+              )}
             </Empty>
           ) : (
             <>
-              <InternshipForm label="Créer un stage" isCreatedForm />
+              {currentUserRole === 'intern' && (
+                <h1>
+                  <strong>Mes demandes</strong>
+                </h1>
+              )}
               <Table columns={INTERNSHIP_COLUMN} dataSource={INTERNSHIP_DATA} />
             </>
           )}
@@ -171,4 +180,4 @@ function InternshipPage() {
   );
 }
 
-export default InternshipPage;
+export default InternshipRequestPage;

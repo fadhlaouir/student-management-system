@@ -94,6 +94,21 @@ function LoginPage() {
   /* -------------------------------- RENDERING ------------------------------- */
   return (
     <>
+      <Row justify="end" style={{ margin: '20px 20px 0 0' }}>
+        Le bouton connexion ne fonctionne pas ?
+      </Row>
+      <Row justify="end">
+        <Button
+          type="primary"
+          style={{ margin: '20px 40px' }}
+          onClick={() => {
+            window.localStorage.clear();
+            window.location.reload();
+          }}
+        >
+          Rafraîchir la page
+        </Button>
+      </Row>
       <Row align="center" justify="center">
         <Form
           name="login-form"

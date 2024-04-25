@@ -8,7 +8,9 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import jwt_decode from 'jwt-decode';
 
 // route components
+import InternshipRequestPage from './pages/InternshipRequestPage';
 import SupervisorPage from './pages/SupervisorPage';
+import InternshipPage from './pages/InternshipPage';
 import NotFoundPage from './pages/NotFoundPage';
 import CompanyPage from './pages/CompanyPage';
 import ManagerPage from './pages/ManagerPage';
@@ -16,7 +18,6 @@ import InternPage from './pages/InternPage';
 import LoginPage from './pages/LoginPage';
 import Home from './pages/Home';
 import App from './App';
-import InternshipPage from './pages/InternshipPage';
 
 /* ---------------------------------- CONST --------------------------------- */
 // eslint-disable-next-line consistent-return
@@ -76,6 +77,7 @@ export const renderRoutes = () => (
       <LayoutRoute exact path="/interns" component={InternPage} layout={App} />
       <LayoutRoute exact path="/companies" component={CompanyPage} layout={App} />
       <LayoutRoute exact path="/programs" component={InternshipPage} layout={App} />
+      <LayoutRoute exact path="/requests" component={InternshipRequestPage} layout={App} />
 
       <Redirect exact from="/" to="/acceuil" />
       <Route component={NotFoundPage} />
