@@ -10,12 +10,12 @@ import axios from 'axios';
 // Config
 import { API_ENDPOINT } from '../common/config';
 
-// fetch All company
-export const fetchAllCompanies = createAsyncThunk('companies/fetchAllCompanies', async (id, { rejectWithValue }) => {
+// fetch All internship
+export const fetchAllInternship = createAsyncThunk('internship/fetchAllInternship', async (id, { rejectWithValue }) => {
   try {
     const config = {
       method: 'get',
-      url: `${API_ENDPOINT}/v1/api/companys`,
+      url: `${API_ENDPOINT}/v1/api/internships`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
@@ -27,12 +27,12 @@ export const fetchAllCompanies = createAsyncThunk('companies/fetchAllCompanies',
   }
 });
 
-// fetch single company object
-export const fetchCompany = createAsyncThunk('companies/fetchCompany', async (id, { rejectWithValue }) => {
+// fetch single internship object
+export const fetchInternship = createAsyncThunk('internship/fetchInternship', async (id, { rejectWithValue }) => {
   try {
     const config = {
       method: 'get',
-      url: `${API_ENDPOINT}/v1/api/companys/${id}`,
+      url: `${API_ENDPOINT}/v1/api/internships/${id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
@@ -45,12 +45,12 @@ export const fetchCompany = createAsyncThunk('companies/fetchCompany', async (id
   }
 });
 
-// Create new company
-export const createCompnay = createAsyncThunk('companies/createCompnay', async (data, { rejectWithValue }) => {
+// Create new internship
+export const createInternship = createAsyncThunk('internship/createInternship', async (data, { rejectWithValue }) => {
   try {
     const config = {
       method: 'post',
-      url: `${API_ENDPOINT}/v1/api/company`,
+      url: `${API_ENDPOINT}/v1/api/internship`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
@@ -64,12 +64,12 @@ export const createCompnay = createAsyncThunk('companies/createCompnay', async (
   }
 });
 
-// Update questionAndAnswer
-export const updateCompany = createAsyncThunk('companies/updateCompany', async (data, { rejectWithValue }) => {
+// Update internship
+export const updateInternship = createAsyncThunk('internship/updateInternship', async (data, { rejectWithValue }) => {
   try {
     const config = {
       method: 'put',
-      url: `${API_ENDPOINT}/v1/api/companys/${data._id}`,
+      url: `${API_ENDPOINT}/v1/api/internships/${data._id}`,
       data: data.fields,
       headers: {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -82,12 +82,12 @@ export const updateCompany = createAsyncThunk('companies/updateCompany', async (
   }
 });
 
-// Delete questionAndAnswer
-export const deleteCompany = createAsyncThunk('companies/deleteCompany', async (_id, { rejectWithValue }) => {
+// Delete internship
+export const deleteInternship = createAsyncThunk('internship/deleteInternship', async (_id, { rejectWithValue }) => {
   try {
     const config = {
       method: 'delete',
-      url: `${API_ENDPOINT}/v1/api/companys/${_id}`,
+      url: `${API_ENDPOINT}/v1/api/internships/${_id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
@@ -99,35 +99,35 @@ export const deleteCompany = createAsyncThunk('companies/deleteCompany', async (
   }
 });
 
-// Companies slice
-const Companies = createSlice({
-  name: 'Companies',
+// Internship slice
+const Internship = createSlice({
+  name: 'Internship',
   initialState: {
-    companies: [],
-    company: null,
+    internships: [],
+    internship: null,
     loading: false,
   },
   extraReducers: {
-    [fetchAllCompanies.fulfilled]: (state, action) => {
-      state.companies = action.payload;
+    [fetchAllInternship.fulfilled]: (state, action) => {
+      state.internships = action.payload;
       state.loading = false;
     },
-    [fetchAllCompanies.pending]: (state) => {
+    [fetchAllInternship.pending]: (state) => {
       state.loading = true;
     },
-    [fetchCompany.fulfilled]: (state, action) => {
-      state.company = action.payload;
+    [fetchInternship.fulfilled]: (state, action) => {
+      state.internship = action.payload;
       state.loading = false;
     },
-    [fetchCompany.pending]: (state) => {
+    [fetchInternship.pending]: (state) => {
       state.loading = true;
     },
   },
 });
 
-export default Companies.reducer;
+export default Internship.reducer;
 
 // Selectors
-export const selectAllCompanies = (state) => state.Companies;
-export const selectCompany = (state) => state.Companies.company;
-export const selectCompanyLoading = (state) => state.Companies.loading;
+export const selectAllInternships = (state) => state.Internship;
+export const selectInternship = (state) => state.Internship.internship;
+export const selectInternshipLoading = (state) => state.Internship.loading;

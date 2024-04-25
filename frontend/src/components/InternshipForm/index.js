@@ -4,10 +4,11 @@
 
 // Packages
 import React, { useEffect, useState } from 'react';
+import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
 
 // Redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 
 // UI Components
@@ -16,18 +17,24 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import FormBuilder from 'antd-form-builder';
 
 // reducers
-import { createCompnay, fetchAllCompanies, updateCompany } from '../../reducers/Companies.slice';
+import { createInternship, fetchAllInternship, updateInternship } from '../../reducers/Internship.slice';
+import { fetchAllCompanies, selectAllCompanies } from '../../reducers/Companies.slice';
+import { fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
 
 /* -------------------------------------------------------------------------- */
-/*                                Company Form                                */
+/*                               Internship Form                              */
 /* -------------------------------------------------------------------------- */
-function CompanyForm({ onChange, onlyFormItems, isCreatedForm, label, record }) {
+function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record }) {
   /* ---------------------------------- HOOKS --------------------------------- */
   const [showModal, setShowModal] = useState(false);
 
   const dispatch = useDispatch();
+  const companies = useSelector(selectAllCompanies);
+  const users = useSelector(selectAllUsers);
 
   useEffect(() => {
+    dispatch(fetchAllInternship());
+    dispatch(fetchAllUsers());
     dispatch(fetchAllCompanies());
   }, []);
 
@@ -41,7 +48,7 @@ function CompanyForm({ onChange, onlyFormItems, isCreatedForm, label, record }) 
   const onClickSubmit = (entry) => {
     if (record) {
       dispatch(
-        updateCompany({
+        updateInternship({
           _id: record._id,
           fields: {
             ...entry,
@@ -50,15 +57,15 @@ function CompanyForm({ onChange, onlyFormItems, isCreatedForm, label, record }) 
       )
         .then(() => {
           notification.success({
-            message: 'Société',
-            description: 'Société Mis à jour avec succès',
+            message: 'Stage',
+            description: 'Stage Mis à jour avec succès',
           });
           setShowModal(!showModal);
-          dispatch(fetchAllCompanies());
+          dispatch(fetchAllInternship());
         })
         .catch((error) =>
           notification.error({
-            message: 'Société',
+            message: 'Stage',
             description: error.message,
           }),
         )
@@ -66,22 +73,22 @@ function CompanyForm({ onChange, onlyFormItems, isCreatedForm, label, record }) 
       form.resetFields();
     } else {
       dispatch(
-        createCompnay({
+        createInternship({
           ...entry,
         }),
       )
         .then(unwrapResult)
         .then(() => {
           notification.success({
-            message: 'Société',
-            description: 'Société à été créées avec succès',
+            message: 'Stage',
+            description: 'Stage est créées avec succès',
           });
           setShowModal(!showModal);
-          dispatch(fetchAllCompanies());
+          dispatch(fetchAllInternship());
         })
         .catch((error) =>
           notification.error({
-            message: 'Société',
+            message: 'Stage',
             description: error.message,
           }),
         );
@@ -89,60 +96,88 @@ function CompanyForm({ onChange, onlyFormItems, isCreatedForm, label, record }) 
     }
   };
 
+  function getFullName(user) {
+    return `${user?.firstName} ${user?.lastName}`;
+  }
+  const supervisorOptions =
+    users?.users
+      ?.filter((user) => user.role === 'supervisor')
+      .map((user) => ({
+        label: `${user.firstName} ${user.lastName}`,
+        value: user._id,
+      })) || [];
+
+  const companiesOptions =
+    companies?.companies?.map((company) => ({
+      label: company.name,
+      value: company._id,
+    })) || [];
+
   /* -------------------------------- CONSTANTS ------------------------------- */
   const FIELDS = {
     columns: 2,
     fields: [
       {
-        key: 'name',
-        placeholder: 'Nom de la société',
-        label: 'Nom de la société',
-        initialValue: record?.name,
+        key: 'title',
+        placeholder: 'Titre de stage',
+        label: 'Titre de stage',
+        initialValue: record?.title,
         rules: [
           {
             required: true,
-            message: 'Nom de la société est obligatoire',
+            message: 'Titre de stage est obligatoire',
           },
         ],
       },
       {
-        key: 'address',
-        placeholder: 'Adresse',
-        label: 'Adresse',
-        initialValue: record?.address,
+        key: 'subject',
+        placeholder: 'Sujet',
+        label: 'Sujet',
+        initialValue: record?.subject,
         rules: [
           {
             required: true,
-            message: 'Adresse est obligatoire',
+            message: 'Sujet est obligatoire',
           },
         ],
       },
       {
-        key: 'phoneNumber',
-        placeholder: 'Numéro de téléphone',
-        label: 'Numéro de téléphone',
-        initialValue: record?.phoneNumber,
+        key: 'supervisor',
+        label: 'Encadrant',
+        widget: 'select',
+        initialValue: record?.supervisor ? getFullName(record?.supervisor) : null,
+        options: supervisorOptions,
       },
       {
-        key: 'faxNumber',
-        placeholder: 'Numéro de fax',
-        label: 'Numéro de fax',
-        initialValue: record?.faxNumber,
+        key: 'company',
+        label: 'Entreprise',
+        widget: 'select',
+        initialValue: record?.company ? record.company?.name : null,
+        options: companiesOptions,
       },
       {
-        key: 'email',
-        placeholder: 'Email',
-        label: 'Email',
-        initialValue: record?.email,
+        key: 'startDate',
+        label: 'Date de début',
+        widget: 'date-picker',
+        initialValue: record?.startDate ? moment.tz(record.startDate, 'Africa/Tunis') : null,
+        rules: [{ required: true, message: 'Date de début est obligatoire' }],
+      },
+      {
+        key: 'endDate',
+        label: 'Date de fin',
+        widget: 'date-picker',
+        initialValue: record?.endDate ? moment.tz(record.endDate, 'Africa/Tunis') : null,
         rules: [
-          {
-            required: true,
-            message: 'Email est obligatoire',
-          },
-          {
-            type: 'email',
-            message: 'Email est invalide',
-          },
+          { required: true, message: 'Date de fin est obligatoire' },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              const startDate = getFieldValue('startDate');
+              if (!startDate || !value || startDate.isBefore(value)) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error('End Date should be after Start Date'));
+            },
+          }),
         ],
       },
     ],
@@ -191,7 +226,7 @@ function CompanyForm({ onChange, onlyFormItems, isCreatedForm, label, record }) 
   );
 }
 
-CompanyForm.propTypes = {
+InternshipForm.propTypes = {
   record: PropTypes.object,
   label: PropTypes.string,
   isCreatedForm: PropTypes.bool,
@@ -199,8 +234,8 @@ CompanyForm.propTypes = {
   onlyFormItems: PropTypes.bool,
 };
 
-CompanyForm.defaultProps = {
+InternshipForm.defaultProps = {
   isCreatedForm: false,
 };
 
-export default CompanyForm;
+export default InternshipForm;

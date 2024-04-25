@@ -15,6 +15,9 @@ import { Form, Button, Modal, notification, Row } from 'antd';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import FormBuilder from 'antd-form-builder';
 
+// Local Components
+import { PROFESSOR_SPECIALITIES } from '../../common/constants';
+
 // reducers
 import { fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
 
@@ -223,7 +226,8 @@ function UserForm({ isCreatedForm, label, record }) {
       {
         key: 'speciality',
         label: 'Specialité',
-        placeholder: 'Specialité',
+        widget: 'select',
+        options: PROFESSOR_SPECIALITIES.map((speciality) => ({ label: speciality, value: speciality })),
         initialValue: record?.speciality,
         rules: [
           {

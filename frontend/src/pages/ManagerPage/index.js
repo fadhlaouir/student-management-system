@@ -22,7 +22,7 @@ import Loader from '../../shared/Components/Loader';
 import { deleteUser, fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
 
 /* -------------------------------------------------------------------------- */
-/*                                  User Page                                 */
+/*                                Manager Page                                */
 /* -------------------------------------------------------------------------- */
 function ManagerPage() {
   /* ---------------------------------- CONST --------------------------------- */
@@ -139,7 +139,7 @@ function ManagerPage() {
           ) : (
             <>
               <ManagerForm label={'créer un manager'} isCreatedForm />
-              <Table columns={MANAGER_COLUMN} dataSource={ManagerData} scroll={{ x: 1100 }} />
+              <Table columns={MANAGER_COLUMN} dataSource={ManagerData} />
             </>
           )}
         </>

@@ -4,7 +4,7 @@
 /* -------------------------------------------------------------------------- */
 
 // Packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { unwrapResult } from '@reduxjs/toolkit';
 
 // redux
@@ -20,9 +20,10 @@ import Loader from '../../shared/Components/Loader';
 
 // reducers
 import { deleteUser, fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
+import { selectSessionUser } from '../../reducers/Session.slice';
 
 /* -------------------------------------------------------------------------- */
-/*                                  User Page                                 */
+/*                                 Intern Page                                */
 /* -------------------------------------------------------------------------- */
 function InternPage() {
   /* ---------------------------------- CONST --------------------------------- */
@@ -30,6 +31,7 @@ function InternPage() {
   const { confirm } = Modal;
   // Selectors
   const users = useSelector(selectAllUsers);
+  const currentUser = useSelector(selectSessionUser);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,7 +40,8 @@ function InternPage() {
       setLoading(false);
     }, 1000);
   }, []);
-
+  const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
+  const canDeleteOrUpdateIntern = currentUserRole === 'admin' || currentUserRole === 'manager';
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   /**
    *
@@ -112,15 +115,24 @@ function InternPage() {
     },
     {
       render: (record) => (
-        <Row align="middle" justify="end">
+        <Row align="middle" justify="space-between">
           <Col>
-            <InternForm record={record} />
+            <a href={`mailto:${record.email}`}>
+              <Button>Contact</Button>
+            </a>
           </Col>
-          <Col className="mr">
-            <Button onClick={() => removeUser(record)} danger>
-              <DeleteOutlined />
-            </Button>
-          </Col>
+          {canDeleteOrUpdateIntern && (
+            <>
+              <Col>
+                <InternForm record={record} />
+              </Col>
+              <Col>
+                <Button onClick={() => removeUser(record)} danger>
+                  <DeleteOutlined />
+                </Button>
+              </Col>
+            </>
+          )}
         </Row>
       ),
     },
@@ -145,7 +157,7 @@ function InternPage() {
           ) : (
             <>
               <InternForm label={'créer un stagiaire'} isCreatedForm />
-              <Table columns={INTERN_COLUMN} dataSource={InternPageData} scroll={{ x: 1100 }} />
+              <Table columns={INTERN_COLUMN} dataSource={InternPageData} />
             </>
           )}
         </>

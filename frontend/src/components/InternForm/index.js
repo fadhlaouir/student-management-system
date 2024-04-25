@@ -15,6 +15,9 @@ import { Form, Button, Modal, notification, Row } from 'antd';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import FormBuilder from 'antd-form-builder';
 
+// Local Components
+import { STUDENT_SPECIALITIES } from '../../common/constants';
+
 // reducers
 import { fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
 
@@ -25,7 +28,7 @@ import { API_ENDPOINT } from '../../common/config';
 import '../../App.css';
 
 /* -------------------------------------------------------------------------- */
-/*                                  User Form                                 */
+/*                                 Intern Form                                */
 /* -------------------------------------------------------------------------- */
 function InternForm({ isCreatedForm, label, record }) {
   /* ---------------------------------- HOOKS --------------------------------- */
@@ -223,7 +226,8 @@ function InternForm({ isCreatedForm, label, record }) {
       {
         key: 'speciality',
         label: 'Specialité',
-        placeholder: 'Specialité',
+        widget: 'select',
+        options: STUDENT_SPECIALITIES.map((speciality) => ({ value: speciality, label: speciality })),
         initialValue: record?.speciality,
         rules: [
           {

@@ -14,24 +14,25 @@ import { Table, Row, Col, Button, Modal, notification, Empty, Skeleton } from 'a
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 // reducers
-import { deleteCompany, fetchAllCompanies, selectAllCompanies } from '../../reducers/Companies.slice';
+import { deleteInternship, fetchAllInternship, selectAllInternships } from '../../reducers/Internship.slice';
 
 // local components
-import CompanyForm from '../../components/CompanyForm/index';
+import InternshipForm from '../../components/InternshipForm/index';
+import { localMoment } from '../../common/helpers';
 
 /* -------------------------------------------------------------------------- */
-/*                                Company Page                                */
+/*                               Internship Page                              */
 /* -------------------------------------------------------------------------- */
-function CompanyPage() {
+function InternshipPage() {
   /* ---------------------------------- HOOKS --------------------------------- */
   const { confirm } = Modal;
   const [loading, setLoading] = useState(true);
   // Selectors
-  const CompaniesObject = useSelector(selectAllCompanies);
+  const InternshipObject = useSelector(selectAllInternships);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchAllCompanies());
+    dispatch(fetchAllInternship());
     setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -44,21 +45,21 @@ function CompanyPage() {
    */
   const removeCompany = (data) => {
     confirm({
-      title: `Voulez-vous vraiment supprimer "${data?.name}"?`,
+      title: `Voulez-vous vraiment supprimer "${data?.title}"?`,
       icon: <ExclamationCircleOutlined />,
       onOk() {
-        dispatch(deleteCompany(data._id))
+        dispatch(deleteInternship(data._id))
           .then(unwrapResult)
           .then(() => {
             notification.success({
-              message: 'Supprimer la société',
-              description: 'La société à été supprimées avec succès',
+              message: 'Supprimer le stage',
+              description: 'le stage à été supprimées avec succès',
             });
-            dispatch(fetchAllCompanies());
+            dispatch(fetchAllInternship());
           })
           .catch((err) =>
             notification.error({
-              message: 'Supprimer la société',
+              message: 'Supprimer le stage',
               description: err.error.message,
             }),
           );
@@ -67,50 +68,69 @@ function CompanyPage() {
   };
 
   /* -------------------------------- CONSTANTS ------------------------------- */
-  const COMPANY = CompaniesObject && CompaniesObject.companies;
+  const INTERNSHIPS = InternshipObject && InternshipObject.internships;
 
-  const COMPANY_DATA = COMPANY?.map((compnay, index) => ({
-    // in common
+  function getFullName(user) {
+    return `${user?.firstName} ${user?.lastName}`;
+  }
+
+  const INTERNSHIP_DATA = INTERNSHIPS?.map((internship, index) => ({
     key: index,
-    _id: compnay._id,
-    name: compnay.name,
-    address: compnay.address,
-    phoneNumber: compnay.phoneNumber,
-    faxNumber: compnay.faxNumber,
-    email: compnay.email,
+    _id: internship?._id,
+    title: internship?.title,
+    subject: internship?.subject,
+    startDate: internship?.startDate,
+    endDate: internship?.endDate,
+    company: internship?.company,
+    supervisor: internship.supervisor,
+    status: internship?.status,
   }));
 
-  const COMPANY_COLUMN = [
+  const INTERNSHIP_COLUMN = [
     {
-      title: 'Nom de la société',
-      key: 'name',
-      dataIndex: 'name',
+      title: 'Titre',
+      key: 'title',
+      dataIndex: 'title',
     },
     {
-      title: 'Adresse',
-      key: 'address',
-      dataIndex: 'address',
+      title: 'Sujet',
+      key: 'subject',
+      dataIndex: 'subject',
     },
     {
-      title: 'Numéro de téléphone',
-      key: 'phoneNumber',
-      dataIndex: 'phoneNumber',
+      title: 'Entreprise',
+      key: 'company',
+      dataIndex: 'company',
+      render: (record) => record?.name || 'Non assigné',
     },
     {
-      title: 'Numéro de fax',
-      key: 'faxNumber',
-      dataIndex: 'faxNumber',
+      title: 'Superviseur',
+      key: 'supervisor',
+      dataIndex: 'supervisor',
+      render: (record) => getFullName(record) || 'Non assigné',
     },
     {
-      title: 'Email',
-      key: 'email',
-      dataIndex: 'email',
+      title: 'Date de début',
+      key: 'startDate',
+      dataIndex: 'startDate',
+      render: (record) => localMoment(record.startDate),
+    },
+    {
+      title: 'Date de fin',
+      key: 'endDate',
+      dataIndex: 'endDate',
+      render: (record) => localMoment(record.endDate),
+    },
+    {
+      title: 'Statut',
+      key: 'status',
+      dataIndex: 'status',
     },
     {
       render: (record) => (
         <Row align="middle" justify="end">
           <Col>
-            <CompanyForm record={record} />
+            <InternshipForm record={record} />
           </Col>
           <Col className="mr">
             <Button type="danger" onClick={() => removeCompany(record)} danger>
@@ -129,20 +149,20 @@ function CompanyPage() {
         <Skeleton active />
       ) : (
         <>
-          {COMPANY_DATA?.length === 0 ? (
+          {INTERNSHIP_DATA?.length === 0 ? (
             <Empty
               image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
               imageStyle={{
                 height: 250,
               }}
-              description="aucune société n'a été trouvée"
+              description="aucun stage n'a été trouvée"
             >
-              <CompanyForm label="Créer une société" isCreatedForm />
+              <InternshipForm label="Créer un stage" isCreatedForm />
             </Empty>
           ) : (
             <>
-              <CompanyForm label="Créer une société" isCreatedForm />
-              <Table columns={COMPANY_COLUMN} dataSource={COMPANY_DATA} />
+              <InternshipForm label="Créer un stage" isCreatedForm />
+              <Table columns={INTERNSHIP_COLUMN} dataSource={INTERNSHIP_DATA} />
             </>
           )}
         </>
@@ -151,4 +171,4 @@ function CompanyPage() {
   );
 }
 
-export default CompanyPage;
+export default InternshipPage;

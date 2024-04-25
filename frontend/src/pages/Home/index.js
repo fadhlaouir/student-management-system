@@ -1,19 +1,69 @@
-import React from 'react';
+/* -------------------------------------------------------------------------- */
+/*                                Dependencies                                */
+/* -------------------------------------------------------------------------- */
+
+// Packages
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+// UI Components
 import { Row, Col, Typography, Statistic } from 'antd';
 
+// Local Components
+import Loader from '../../shared/Components/Loader';
+
+// reducers
+import { fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
+import { fetchAllCompanies, selectAllCompanies } from '../../reducers/Companies.slice';
+import { fetchAllInternship, selectAllInternships } from '../../reducers/Internship.slice';
+
+// Consts
 const { Title } = Typography;
 
+/* -------------------------------------------------------------------------- */
+/*                                  Home Page                                 */
+/* -------------------------------------------------------------------------- */
 function Home() {
+  /* ---------------------------------- HOOKS --------------------------------- */
+  const [loading, setLoading] = useState(true);
+  // Selectors
+  const users = useSelector(selectAllUsers);
+  const companies = useSelector(selectAllCompanies);
+  const internships = useSelector(selectAllInternships);
+  const dispatch = useDispatch();
+
+  /* --------------------------------- EFFECT --------------------------------- */
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+    dispatch(fetchAllCompanies());
+    dispatch(fetchAllInternship());
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  /* --------------------------------- CONSTS --------------------------------- */
+  const USERS = users ? users.users : [];
+  const COMPANIES = companies ? companies.companies : [];
+  const INTERNSHIPS = internships ? internships.internships : [];
   const donnees = {
-    totalUtilisateurs: 1000,
-    totalManagers: 200,
-    totalStagiaires: 300,
-    totalSuperviseurs: 150,
-    totalEntreprises: 50,
-    totalStages: 80,
-    totalStagesDemandes: 120,
+    totalUtilisateurs: USERS?.length,
+    totalManagers: USERS?.filter((user) => user.role === 'manager').length,
+    totalStagiaires: USERS?.filter((user) => user.role === 'intern').length,
+    totalSuperviseurs: USERS?.filter((user) => user.role === 'supervisor').length,
+    totalEntreprises: COMPANIES?.length,
+    totalStages: INTERNSHIPS?.length,
+    totalStagesDemandes: '?',
   };
 
+  /* -------------------------------- RENDERING ------------------------------- */
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '100px' }}>
+        <Loader />
+      </div>
+    );
+  }
   return (
     <div style={{ padding: '20px' }}>
       <Title level={2} style={{ marginBottom: '30px', textAlign: 'center' }}>

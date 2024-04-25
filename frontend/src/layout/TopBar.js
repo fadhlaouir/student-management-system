@@ -1,12 +1,28 @@
+/* -------------------------------------------------------------------------- */
+/*                                Dependencies                                */
+/* -------------------------------------------------------------------------- */
+// Packages
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useHistory, Link } from 'react-router-dom';
+
+// Redux
 import { useSelector, useDispatch } from 'react-redux';
+
+// UI Components
 import { Row, Col, Layout, Divider, Button } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
+
+// Redux
 import { selectSessionUser, $logout } from '../reducers/Session.slice';
+
+// Styles
 import './index.css';
 
+/* -------------------------------------------------------------------------- */
+/*                                   Top Bar                                  */
+/* -------------------------------------------------------------------------- */
 function TopBar() {
+  /* ---------------------------------- HOOKS --------------------------------- */
   const { Header } = Layout;
   const dispatch = useDispatch();
   const history = useHistory();
@@ -24,7 +40,7 @@ function TopBar() {
   }, []);
 
   const userName = useMemo(() => user?.email, [user]);
-
+  /* -------------------------------- RENDERING ------------------------------- */
   return (
     <Header id="top-bar" className="header">
       <Row align="middle" justify="space-between">

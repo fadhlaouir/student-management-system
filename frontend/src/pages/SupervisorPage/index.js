@@ -22,7 +22,7 @@ import Loader from '../../shared/Components/Loader';
 import { deleteUser, fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
 
 /* -------------------------------------------------------------------------- */
-/*                                  User Page                                 */
+/*                                 Super Visor                                */
 /* -------------------------------------------------------------------------- */
 function SuperVisor() {
   /* ---------------------------------- CONST --------------------------------- */
@@ -145,7 +145,7 @@ function SuperVisor() {
           ) : (
             <>
               <SupervisorForm label={'créer un encadrant'} isCreatedForm />
-              <Table columns={SUPERVISOR_COLUMN} dataSource={supervisorData} scroll={{ x: 1100 }} />
+              <Table columns={SUPERVISOR_COLUMN} dataSource={supervisorData} />
             </>
           )}
         </>

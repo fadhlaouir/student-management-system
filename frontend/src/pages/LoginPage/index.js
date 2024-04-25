@@ -1,20 +1,37 @@
+/* -------------------------------------------------------------------------- */
+/*                                Dependencies                                */
+/* -------------------------------------------------------------------------- */
+
+// Packages
 import React, { useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+
+// Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
+
+// UI Components
 import { Form, Button, notification, Row } from 'antd';
 import FormBuilder from 'antd-form-builder';
+
+// Reducers
 import { $login, selectSessionLoading } from '../../reducers/Session.slice';
 
+// Styles
 import './index.css';
 
+/* -------------------------------------------------------------------------- */
+/*                                 Login Page                                 */
+/* -------------------------------------------------------------------------- */
 function LoginPage() {
+  /* ---------------------------------- HOOKS --------------------------------- */
   const dispatch = useDispatch();
   const isLoading = useSelector(selectSessionLoading);
   const history = useHistory();
   const windowWidthRef = useRef(window.innerWidth);
   const [form] = Form.useForm();
 
+  /* ----------------------------- RENDER HELPERS ----------------------------- */
   const loginFormFields = {
     fields: [
       {
@@ -74,6 +91,7 @@ function LoginPage() {
     };
   }, []);
 
+  /* -------------------------------- RENDERING ------------------------------- */
   return (
     <>
       <Row align="center" justify="center">
