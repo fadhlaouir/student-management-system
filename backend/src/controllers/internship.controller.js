@@ -29,7 +29,7 @@ async function createInternship(req, res) {
  */
 async function getInternships(req, res) {
   try {
-    const internships = await Internship.find();
+    const internships = await Internship.find().populate('company supervisor');
     res.json(internships);
   } catch (error) {
     console.error('Error getting internships:', error);
@@ -62,18 +62,57 @@ async function getInternshipById(req, res) {
  */
 async function updateInternship(req, res) {
   try {
-    const updatedInternship = await Internship.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true },
-    );
-    if (!updatedInternship) {
-      return res.status(404).json({ error: 'internship not found' });
+    // Find the internship by ID
+    let internship = await Internship.findById(req.params.id);
+    if (!internship) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Internship not found',
+      });
     }
-    res.json(updatedInternship);
-  } catch (error) {
-    console.error('Error updating internship by ID:', error);
-    res.status(500).json({ error: 'Failed to update internship' });
+
+    // Update the fields with values from the request body if they exist
+    if (req.body.company) {
+      internship.company = req.body.company;
+    }
+    if (req.body.intern) {
+      internship.intern = req.body.intern;
+    }
+    if (req.body.supervisor) {
+      internship.supervisor = req.body.supervisor;
+    }
+
+    // Update other fields if they exist in the request body
+    if (req.body.title) {
+      internship.title = req.body.title;
+    }
+    if (req.body.subject) {
+      internship.subject = req.body.subject;
+    }
+    if (req.body.startDate) {
+      internship.startDate = req.body.startDate;
+    }
+    if (req.body.endDate) {
+      internship.endDate = req.body.endDate;
+    }
+    if (req.body.status) {
+      internship.status = req.body.status;
+    }
+
+    // Save the updated internship
+    await internship.save();
+
+    // Return success response
+    res.status(200).json({
+      status: 'success',
+      data: internship,
+    });
+  } catch (err) {
+    // Handle errors
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
   }
 }
 

@@ -7,32 +7,30 @@ const mongoose = require('mongoose');
 /* -------------------------------------------------------------------------- */
 /*                              SCHEMA DEFINITION                             */
 /* -------------------------------------------------------------------------- */
-
-const InternshipSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  subject: {
-    type: String,
-    required: true,
-  },
-  startDate: String,
-  endDate: String,
+/**
+ * Schema definition for IntenshipRequest.
+ * This schema defines the structure of the IntenshipRequest entity in the database.
+ */
+const IntenshipRequestSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['open', 'closed'],
-    default: 'open',
+    enum: ['pending', 'accepted', 'rejected'],
+    default: 'pending',
   },
-  company: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Company',
-  },
-  supervisor: {
+  intern: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  internship: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Internship',
+  },
 });
 
-module.exports = mongoose.model('Internship', InternshipSchema);
+/**
+ * Model for IntenshipRequest.
+ * This model represents the IntenshipRequest entity in the database and provides
+ * methods for interacting with IntenshipRequest documents.
+ */
+module.exports = mongoose.model('IntenshipRequest', IntenshipRequestSchema);

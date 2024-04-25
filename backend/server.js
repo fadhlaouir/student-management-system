@@ -39,12 +39,14 @@ const userRoutes = require('./src/routes/user.route');
 const authRoutes = require('./src/routes/auth.route');
 const internshipRoutes = require('./src/routes/internship.route');
 const companyRoutes = require('./src/routes/company.route');
+const internshipRequestRoutes = require('./src/routes/internshipRequest.route');
 
 // local APIs
 app.use('/v1/api', companyRoutes);
 app.use('/v1/api', internshipRoutes);
 app.use('/v1/api', authRoutes);
 app.use('/v1/api', userRoutes);
+app.use('/v1/api', internshipRequestRoutes);
 
 // API for uploads file (photo, galleries)
 app.get('/uploads/:id', (req, res) => {
