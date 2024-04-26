@@ -74,14 +74,15 @@ function AdvancementPage() {
   /* -------------------------------- CONSTANTS ------------------------------- */
   const ADVANCEMENTS = advancementObject && advancementObject;
 
-  const ADVANCEMENT_DATA = ADVANCEMENTS?.map((advancement, index) => ({
+  const ADVANCEMENT_DATA = ADVANCEMENTS?.filter(
+    (avc) => avc.intern?.email === currentUser.email || canCreateOrDeleteOrUpdate,
+  ).map((advancement, index) => ({
     key: index,
     _id: advancement?._id,
     title: advancement?.title,
     description: advancement?.description,
     status: advancement?.status,
-    intern: advancement?.intern?.name,
-    supervisor: advancement?.supervisor?.name,
+    intern: advancement?.intern?.email,
     internship: advancement?.internship?.title,
   }));
 
@@ -97,19 +98,9 @@ function AdvancementPage() {
       dataIndex: 'description',
     },
     {
-      title: 'Status',
-      key: 'status',
-      dataIndex: 'status',
-    },
-    {
       title: 'Intern',
       key: 'intern',
       dataIndex: 'intern',
-    },
-    {
-      title: 'Supervisor',
-      key: 'supervisor',
-      dataIndex: 'supervisor',
     },
     {
       title: 'Internship',
@@ -117,20 +108,25 @@ function AdvancementPage() {
       dataIndex: 'internship',
     },
     {
+      title: 'Status',
+      key: 'status',
+      dataIndex: 'status',
+    },
+    {
       render: (record) => (
         <>
-          {canCreateOrDeleteOrUpdate && (
-            <Row align="middle" justify="end">
-              <Col>
-                <AdvancementForm record={record} />
-              </Col>
+          <Row align="middle" justify="end">
+            <Col>
+              <AdvancementForm record={record} />
+            </Col>
+            {canCreateOrDeleteOrUpdate && (
               <Col className="mr">
                 <Button type="danger" onClick={() => removeAdvancement(record)} danger>
                   <DeleteOutlined />
                 </Button>
               </Col>
-            </Row>
-          )}
+            )}
+          </Row>
         </>
       ),
     },
@@ -139,7 +135,7 @@ function AdvancementPage() {
   /* -------------------------------- RENDERING ------------------------------- */
   return (
     <div>
-      {/* {loading ? (
+      {loading ? (
         <Skeleton active />
       ) : (
         <>
@@ -160,8 +156,7 @@ function AdvancementPage() {
             </>
           )}
         </>
-      )} */}
-      <h1>To be continued...</h1>
+      )}
     </div>
   );
 }

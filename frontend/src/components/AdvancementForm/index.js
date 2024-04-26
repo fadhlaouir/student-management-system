@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* -------------------------------------------------------------------------- */
 /*                                Dependencies                                */
 /* -------------------------------------------------------------------------- */
@@ -15,7 +16,7 @@ import { Form, Button, Modal, notification, Row } from 'antd';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import FormBuilder from 'antd-form-builder';
 
-// reducers
+// Reducers
 import { createAdvancement, fetchAllAdvancements, updateAdvancement } from '../../reducers/Advancement.slice';
 import { fetchAllInternshipRequest, selectAllInternshipRequests } from '../../reducers/InternshipRequest.slice';
 
@@ -34,13 +35,31 @@ function AdvancementForm({ onChange, onlyFormItems, isCreatedForm, label, record
     dispatch(fetchAllInternshipRequest());
   }, []);
 
-  const ALLACCEPTEDINTERNSHIP = stages.filter((stage) => stage.status === 'accepted');
-  console.log('stages', ALLACCEPTEDINTERNSHIP);
+  const allAcceptedInternship = stages.filter((stage) => stage.status === 'accepted');
+
+  const uniqueInternships = Array.from(new Set(allAcceptedInternship.map((stage) => stage.internship?._id))).map(
+    (id) => {
+      const stage = allAcceptedInternship.find((stage) => stage.internship?._id === id);
+      return { label: stage.internship?.title, value: stage.internship?._id };
+    },
+  );
+
+  const uniqueInterns = Array.from(new Set(allAcceptedInternship.map((stage) => stage.intern?._id))).map((id) => {
+    const stage = allAcceptedInternship.find((stage) => stage.intern?._id === id);
+    return { label: stage.intern?.email, value: stage.intern?._id };
+  });
+
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   const [form] = Form.useForm();
 
+  const filteredInterns = (internshipId) => {
+    const selectedInternship = allAcceptedInternship.find((stage) => stage.internship?._id === internshipId);
+    return selectedInternship
+      ? [{ label: selectedInternship.intern?.email, value: selectedInternship.intern?._id }]
+      : [];
+  };
+
   /**
-   *
    * @param {object} entry data entry from form
    */
   const onClickSubmit = (entry) => {
@@ -92,16 +111,6 @@ function AdvancementForm({ onChange, onlyFormItems, isCreatedForm, label, record
     }
   };
 
-  const internships = ALLACCEPTEDINTERNSHIP.map((stage) => ({
-    label: stage.internship?.title,
-    value: stage.internship?._id,
-  }));
-
-  const interns = ALLACCEPTEDINTERNSHIP.map((stage) => ({
-    label: stage.intern?.email,
-    value: stage.intern?._id,
-  }));
-
   /* -------------------------------- CONSTANTS ------------------------------- */
   const FIELDS = {
     columns: 1,
@@ -110,13 +119,17 @@ function AdvancementForm({ onChange, onlyFormItems, isCreatedForm, label, record
         key: 'internship',
         label: 'Internship',
         widget: 'select',
-        options: internships,
+        options: uniqueInternships,
+        onChange: (internshipId) => {
+          form.setFieldsValue({ intern: null });
+          form.setFieldsValue({ intern: filteredInterns(internshipId) });
+        },
       },
       {
         key: 'intern',
         label: 'Intern',
         widget: 'select',
-        options: interns,
+        options: uniqueInterns,
       },
       {
         key: 'title',
@@ -157,6 +170,23 @@ function AdvancementForm({ onChange, onlyFormItems, isCreatedForm, label, record
     ],
   };
 
+  const UPDATE_FIELDS = {
+    columns: 1,
+    fields: [
+      {
+        key: 'status',
+        label: 'Status',
+        widget: 'select',
+        initialValue: record?.status,
+        options: [
+          { label: 'Todo', value: 'todo' },
+          { label: 'In Progress', value: 'in-progress' },
+          { label: 'Done', value: 'done' },
+        ],
+      },
+    ],
+  };
+
   /* -------------------------------- RENDERING ------------------------------- */
   return (
     <div>
@@ -183,7 +213,7 @@ function AdvancementForm({ onChange, onlyFormItems, isCreatedForm, label, record
           form={form}
           encType="multipart/form-data"
         >
-          <FormBuilder form={form} meta={FIELDS} />
+          <FormBuilder form={form} meta={record ? UPDATE_FIELDS : FIELDS} />
 
           <Row align="middle" justify="center">
             {!onlyFormItems && (

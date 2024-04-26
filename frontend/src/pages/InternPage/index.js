@@ -5,6 +5,7 @@
 
 // Packages
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import { unwrapResult } from '@reduxjs/toolkit';
 
 // redux
@@ -112,6 +113,9 @@ function InternPage() {
       title: 'Specialité',
       key: 'speciality',
       dataIndex: 'speciality',
+    },
+    {
+      render: (record) => <Link to={`/details/${record._id}`}>Voir</Link>,
     },
     {
       render: (record) => (

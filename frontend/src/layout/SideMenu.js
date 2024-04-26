@@ -67,6 +67,7 @@ function SideMenu() {
           { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
           { key: '7', path: '/my-requests', name: 'Mes Demandes', icon: <FileTextOutlined /> },
           { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },
+          { key: '9', path: '/me', name: 'Mes Documents', icon: <UsergroupAddOutlined /> },
         ];
       case 'supervisor':
         return [
