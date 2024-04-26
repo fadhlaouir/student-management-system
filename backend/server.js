@@ -34,21 +34,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(cors());
 
-const advancementRoutes = require('./src/routes/advancement.route');
-app.use('/v1/api', advancementRoutes);
-
 // Require APIs
 const userRoutes = require('./src/routes/user.route');
 const authRoutes = require('./src/routes/auth.route');
 const internshipRoutes = require('./src/routes/internship.route');
 const companyRoutes = require('./src/routes/company.route');
 const internshipRequestRoutes = require('./src/routes/internshipRequest.route');
+const advancementRoutes = require('./src/routes/advancement.route');
 
 // local APIs
 app.use('/v1/api', companyRoutes);
 app.use('/v1/api', internshipRoutes);
 app.use('/v1/api', authRoutes);
 app.use('/v1/api', userRoutes);
+app.use('/v1/api', advancementRoutes);
 app.use('/v1/api', internshipRequestRoutes);
 
 // API for uploads file (photo, galleries)

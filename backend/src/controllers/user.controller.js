@@ -48,18 +48,18 @@ const getUserById = async (req, res) => {
 const updateUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    let foundUser = await User.findById(id);
+    // let foundUser = await User.findById(id);
 
-    const updateImages = {};
+    const updateFile = {};
     if (req.files?.file) {
-      if (foundUser.file !== '') fs.unlinkSync(foundUser.file);
-      updateImages.file = req.files.file[0].path.replace('\\', '/');
+      // if (foundUser.file !== '') fs.unlinkSync(foundUser.file);
+      updateFile.file = req.files.file[0].path.replace('\\', '/');
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
-        ...updateImages,
+        ...updateFile,
         ...req.body,
         updated_at: Date.now(),
       },
