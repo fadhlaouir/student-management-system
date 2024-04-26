@@ -51,9 +51,9 @@ const updateUserById = async (req, res) => {
     let foundUser = await User.findById(id);
 
     const updateImages = {};
-    if (req.files?.photo) {
-      if (foundUser.photo !== '') fs.unlinkSync(foundUser.photo);
-      updateImages.photo = req.files.photo[0].path.replace('\\', '/');
+    if (req.files?.file) {
+      if (foundUser.file !== '') fs.unlinkSync(foundUser.file);
+      updateImages.file = req.files.file[0].path.replace('\\', '/');
     }
 
     const updatedUser = await User.findByIdAndUpdate(

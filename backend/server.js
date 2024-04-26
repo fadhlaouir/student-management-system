@@ -34,6 +34,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(cors());
 
+const advancementRoutes = require('./src/routes/advancement.route');
+app.use('/v1/api', advancementRoutes);
+
 // Require APIs
 const userRoutes = require('./src/routes/user.route');
 const authRoutes = require('./src/routes/auth.route');

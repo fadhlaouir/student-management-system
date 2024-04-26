@@ -27,8 +27,8 @@ var storage = multer.diskStorage({
   },
   fileFilter: function (req, file, cb) {
     var ext = path.extname(file.originalname);
-    if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png' && ext !== '.gif') {
-      return cb(new Error('Only images are allowed'));
+    if (ext !== '.docx' && ext !== '.pdf') {
+      return cb(new Error('Only Word (.docx) or PDF files are allowed'));
     }
     cb(null, true);
   },
@@ -36,10 +36,7 @@ var storage = multer.diskStorage({
 
 /* ---------------------------------- CONST --------------------------------- */
 const upload = multer({ storage: storage });
-const fileUpload = upload.fields([
-  { name: 'photo', maxCount: 1 },
-  { name: 'gallery', maxCount: 5 },
-]);
+const fileUpload = upload.fields([{ name: 'file', maxCount: 1 }]);
 
 // Multer config
 module.exports = { fileUpload };
