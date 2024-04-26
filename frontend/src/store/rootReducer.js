@@ -5,6 +5,7 @@ import User from '../reducers/User.slice';
 import Companies from '../reducers/Companies.slice';
 import Internship from '../reducers/Internship.slice';
 import InternshipRequest from '../reducers/InternshipRequest.slice';
+import Advancement from '../reducers/Advancement.slice';
 
 export default combineReducers({
   Session,
@@ -12,4 +13,5 @@ export default combineReducers({
   Companies,
   Internship,
   InternshipRequest,
+  Advancement,
 });

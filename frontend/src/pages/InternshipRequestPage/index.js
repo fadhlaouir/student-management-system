@@ -10,12 +10,10 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { useSelector, useDispatch } from 'react-redux';
 
 // UI Components
-import { Table, Row, Col, Button, Modal, notification, Empty, Skeleton } from 'antd';
-import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Table, Row, Col, Button, notification, Empty, Skeleton } from 'antd';
 
 // reducers
 import {
-  deleteInternshipRequest,
   fetchAllInternshipRequest,
   selectAllInternshipRequests,
   updateInternshipRequest,
@@ -30,7 +28,6 @@ import { selectSessionUser } from '../../reducers/Session.slice';
 /* -------------------------------------------------------------------------- */
 function InternshipRequestPage() {
   /* ---------------------------------- HOOKS --------------------------------- */
-  const { confirm } = Modal;
   const [loading, setLoading] = useState(true);
   // Selectors
   const currentUser = useSelector(selectSessionUser);

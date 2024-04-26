@@ -48,6 +48,7 @@ function SideMenu() {
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
           { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
           { key: '7', path: '/all-requests', name: 'Demandes de stage', icon: <FileTextOutlined /> },
+          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },
         ];
       case 'manager':
         return [
@@ -57,6 +58,7 @@ function SideMenu() {
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
           { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
           { key: '7', path: '/all-requests', name: 'Demandes de stage', icon: <FileTextOutlined /> },
+          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },
         ];
       case 'intern':
         return [
@@ -64,6 +66,7 @@ function SideMenu() {
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
           { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
           { key: '7', path: '/my-requests', name: 'Mes Demandes', icon: <FileTextOutlined /> },
+          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },
         ];
       case 'supervisor':
         return [
@@ -72,6 +75,7 @@ function SideMenu() {
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
           { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
           { key: '7', path: '/my-requests', name: 'Mes Stages', icon: <FileTextOutlined /> },
+          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },
         ];
       default:
         return [{ key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> }];
