@@ -17,7 +17,7 @@ router.post(
   '/internshipRequest',
   InternshipRequestController.createInternshipRequest,
 );
-
+// GET - Retrieve all internshipRequests
 router.get(
   '/internshipRequests',
   InternshipRequestController.getAllInternshipRequest,

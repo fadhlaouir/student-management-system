@@ -65,6 +65,7 @@ async function getInternshipRequestById(req, res) {
     // Find the InternshipRequest by ID
     const request = await InternshipRequest.findById(req.params.id);
     // Send a response with the found InternshipRequest
+
     res.status(200).json(request);
   } catch (error) {
     // Send an error response if there's an error or if the InternshipRequest is not found
@@ -81,6 +82,7 @@ async function getInternshipRequestById(req, res) {
 async function updateInternshipRequest(req, res) {
   try {
     // Find the InternshipRequest by ID and update it with data from the request body
+
     const updatedRequest = await InternshipRequest.findByIdAndUpdate(
       req.params.id,
       req.body,
