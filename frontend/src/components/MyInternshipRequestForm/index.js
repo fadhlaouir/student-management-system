@@ -28,7 +28,7 @@ import { selectSessionUser } from '../../reducers/Session.slice';
 /* -------------------------------------------------------------------------- */
 /*                               Internship Form                              */
 /* -------------------------------------------------------------------------- */
-function InternshipRequestForm({ onChange, onlyFormItems, isCreatedForm, label, record }) {
+function MyInternshipRequestForm({ onChange, onlyFormItems, isCreatedForm, label, record }) {
   /* ---------------------------------- HOOKS --------------------------------- */
   const [showModal, setShowModal] = useState(false);
 
@@ -172,7 +172,7 @@ function InternshipRequestForm({ onChange, onlyFormItems, isCreatedForm, label, 
   );
 }
 
-InternshipRequestForm.propTypes = {
+MyInternshipRequestForm.propTypes = {
   record: PropTypes.object,
   label: PropTypes.string,
   isCreatedForm: PropTypes.bool,
@@ -180,8 +180,8 @@ InternshipRequestForm.propTypes = {
   onlyFormItems: PropTypes.bool,
 };
 
-InternshipRequestForm.defaultProps = {
+MyInternshipRequestForm.defaultProps = {
   isCreatedForm: false,
 };
 
-export default InternshipRequestForm;
+export default MyInternshipRequestForm;

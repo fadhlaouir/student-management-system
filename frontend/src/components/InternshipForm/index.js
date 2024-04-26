@@ -134,6 +134,7 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
         placeholder: 'Sujet',
         label: 'Sujet',
         initialValue: record?.subject,
+        widget: 'textarea',
         rules: [
           {
             required: true,
@@ -178,6 +179,16 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
               return Promise.reject(new Error('End Date should be after Start Date'));
             },
           }),
+        ],
+      },
+      {
+        key: 'status',
+        label: 'Status',
+        widget: 'select',
+        initialValue: record?.status,
+        options: [
+          { label: 'Open', value: 'open' },
+          { label: 'Closed', value: 'closed' },
         ],
       },
     ],

@@ -81,7 +81,7 @@ export const updateInternshipRequest = createAsyncThunk(
       const config = {
         method: 'put',
         url: `${API_ENDPOINT}/v1/api/internshipRequests/${data._id}`,
-        data: data.fields,
+        data,
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },

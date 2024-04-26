@@ -41,7 +41,7 @@ function InternPage() {
     }, 1000);
   }, []);
   const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
-  const canDeleteOrUpdateIntern = currentUserRole === 'admin' || currentUserRole === 'manager';
+  const canCreateOrDeleteOrUpdate = currentUserRole === 'admin' || currentUserRole === 'manager';
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   /**
    *
@@ -121,7 +121,7 @@ function InternPage() {
               <Button>Contact</Button>
             </a>
           </Col>
-          {canDeleteOrUpdateIntern && (
+          {canCreateOrDeleteOrUpdate && (
             <>
               <Col>
                 <InternForm record={record} />
@@ -152,11 +152,11 @@ function InternPage() {
               }}
               description={"aucun stagiaire n'a été trouvé"}
             >
-              <InternForm label={'créer un stagiaire'} isCreatedForm />
+              {canCreateOrDeleteOrUpdate && <InternForm label={'créer un stagiaire'} isCreatedForm />}
             </Empty>
           ) : (
             <>
-              <InternForm label={'créer un stagiaire'} isCreatedForm />
+              {canCreateOrDeleteOrUpdate && <InternForm label={'créer un stagiaire'} isCreatedForm />}
               <Table columns={INTERN_COLUMN} dataSource={InternPageData} />
             </>
           )}

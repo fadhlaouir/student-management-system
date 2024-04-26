@@ -18,17 +18,16 @@ import {
   deleteInternshipRequest,
   fetchAllInternshipRequest,
   selectAllInternshipRequests,
-  updateInternshipRequest,
 } from '../../reducers/InternshipRequest.slice';
 
 // local components
-import InternshipRequestForm from '../../components/InternshipRequestForm/index';
+import MyInternshipRequestForm from '../../components/MyInternshipRequestForm';
 import { selectSessionUser } from '../../reducers/Session.slice';
 
 /* -------------------------------------------------------------------------- */
 /*                               Internship Page                              */
 /* -------------------------------------------------------------------------- */
-function InternshipRequestPage() {
+function MyInternshipRequestPage() {
   /* ---------------------------------- HOOKS --------------------------------- */
   const { confirm } = Modal;
   const [loading, setLoading] = useState(true);
@@ -45,45 +44,61 @@ function InternshipRequestPage() {
     }, 1000);
   }, []);
   const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
+  const canDelete = currentUserRole === 'intern';
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   /**
    *
    * @param {object} entry data entry from form
    */
-  const updateRequest = (data, type) => {
-    dispatch(
-      updateInternshipRequest({
-        _id: data._id,
-        status: type,
-      }),
-    )
-      .then(unwrapResult)
-      .then(() => {
-        notification.success({
-          message: 'Demande de stage',
-          description: 'La demande a été modifiée avec succès',
-        });
-        dispatch(fetchAllInternshipRequest());
-      })
-      .catch((err) =>
-        notification.error({
-          message: 'Demande de stage',
-          description: err.error.message,
-        }),
-      );
+  const remoreRequest = (data) => {
+    confirm({
+      title: 'Voulez-vous vraiment supprimer cette demande ?',
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        dispatch(deleteInternshipRequest(data._id))
+          .then(unwrapResult)
+          .then(() => {
+            notification.success({
+              message: 'Supprimer le stage',
+              description: 'le stage à été supprimées avec succès',
+            });
+            dispatch(fetchAllInternshipRequest());
+          })
+          .catch((err) =>
+            notification.error({
+              message: 'Supprimer le stage',
+              description: err.error.message,
+            }),
+          );
+      },
+    });
   };
 
   /* -------------------------------- CONSTANTS ------------------------------- */
 
   const INTERNSHIP_DATA =
-    InternshipRequestObject &&
-    InternshipRequestObject?.map((request, index) => ({
-      key: index,
-      _id: request?._id,
-      status: request?.status,
-      intern: request?.intern,
-      internship: request?.internship,
-    }));
+    // eslint-disable-next-line no-nested-ternary
+    currentUserRole === 'intern'
+      ? InternshipRequestObject &&
+        InternshipRequestObject?.filter((request) => request.intern?._id === currentUser._id).map((request, index) => ({
+          key: index,
+          _id: request?._id,
+          status: request?.status,
+          intern: request?.intern,
+          internship: request?.internship,
+        }))
+      : currentUserRole === 'supervisor'
+      ? InternshipRequestObject &&
+        InternshipRequestObject?.filter(
+          (request) => request?.internship?.supervisor?._id === currentUser._id && request?.status === 'accepted',
+        ).map((request, index) => ({
+          key: index,
+          _id: request?._id,
+          status: request?.status,
+          intern: request?.intern,
+          internship: request?.internship,
+        }))
+      : [];
 
   function getFullName(user) {
     return `${user?.firstName} ${user?.lastName}`;
@@ -122,15 +137,12 @@ function InternshipRequestPage() {
     {
       render: (record) => (
         <Row align="middle" justify="end">
-          <Col>
-            <Button type="default" onClick={() => updateRequest(record, 'accepted')}>
-              Accepter
-            </Button>
-          </Col>
           <Col className="mr">
-            <Button type="danger" onClick={() => updateRequest(record, 'rejected')} danger>
-              Refuser
-            </Button>
+            {canDelete && (
+              <Button type="danger" onClick={() => remoreRequest(record)} danger>
+                <DeleteOutlined />
+              </Button>
+            )}
           </Col>
         </Row>
       ),
@@ -153,7 +165,7 @@ function InternshipRequestPage() {
               description="aucun demande de stage n'a été trouvée"
             >
               {currentUserRole === 'intern' && (
-                <InternshipRequestForm label="Créer un demande de stage" isCreatedForm />
+                <MyInternshipRequestForm label="Créer un demande de stage" isCreatedForm />
               )}
             </Empty>
           ) : (
@@ -172,4 +184,4 @@ function InternshipRequestPage() {
   );
 }
 
-export default InternshipRequestPage;
+export default MyInternshipRequestPage;

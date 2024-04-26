@@ -3,7 +3,7 @@
 /* -------------------------------------------------------------------------- */
 
 // Packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 // Redux
 import { unwrapResult } from '@reduxjs/toolkit';
@@ -19,6 +19,7 @@ import { deleteInternship, fetchAllInternship, selectAllInternships } from '../.
 // local components
 import InternshipForm from '../../components/InternshipForm/index';
 import { localMoment } from '../../common/helpers';
+import { selectSessionUser } from '../../reducers/Session.slice';
 
 /* -------------------------------------------------------------------------- */
 /*                               Internship Page                              */
@@ -29,6 +30,7 @@ function InternshipPage() {
   const [loading, setLoading] = useState(true);
   // Selectors
   const InternshipObject = useSelector(selectAllInternships);
+  const currentUser = useSelector(selectSessionUser);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -37,6 +39,9 @@ function InternshipPage() {
       setLoading(false);
     }, 1000);
   }, []);
+
+  const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
+  const canCreateOrDeleteOrUpdate = currentUserRole === 'admin' || currentUserRole === 'manager';
 
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   /**
@@ -128,16 +133,20 @@ function InternshipPage() {
     },
     {
       render: (record) => (
-        <Row align="middle" justify="end">
-          <Col>
-            <InternshipForm record={record} />
-          </Col>
-          <Col className="mr">
-            <Button type="danger" onClick={() => removeCompany(record)} danger>
-              <DeleteOutlined />
-            </Button>
-          </Col>
-        </Row>
+        <>
+          {canCreateOrDeleteOrUpdate && (
+            <Row align="middle" justify="end">
+              <Col>
+                <InternshipForm record={record} />
+              </Col>
+              <Col className="mr">
+                <Button type="danger" onClick={() => removeCompany(record)} danger>
+                  <DeleteOutlined />
+                </Button>
+              </Col>
+            </Row>
+          )}
+        </>
       ),
     },
   ];
@@ -157,11 +166,11 @@ function InternshipPage() {
               }}
               description="aucun stage n'a été trouvée"
             >
-              <InternshipForm label="Créer un stage" isCreatedForm />
+              {canCreateOrDeleteOrUpdate && <InternshipForm label="Créer un stage" isCreatedForm />}
             </Empty>
           ) : (
             <>
-              <InternshipForm label="Créer un stage" isCreatedForm />
+              {canCreateOrDeleteOrUpdate && <InternshipForm label="Créer un stage" isCreatedForm />}
               <Table columns={INTERNSHIP_COLUMN} dataSource={INTERNSHIP_DATA} />
             </>
           )}

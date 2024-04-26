@@ -3,7 +3,7 @@
 /* -------------------------------------------------------------------------- */
 
 // Packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 // Redux
 import { unwrapResult } from '@reduxjs/toolkit';
@@ -18,6 +18,7 @@ import { deleteCompany, fetchAllCompanies, selectAllCompanies } from '../../redu
 
 // local components
 import CompanyForm from '../../components/CompanyForm/index';
+import { selectSessionUser } from '../../reducers/Session.slice';
 
 /* -------------------------------------------------------------------------- */
 /*                                Company Page                                */
@@ -28,6 +29,7 @@ function CompanyPage() {
   const [loading, setLoading] = useState(true);
   // Selectors
   const CompaniesObject = useSelector(selectAllCompanies);
+  const currentUser = useSelector(selectSessionUser);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,6 +38,9 @@ function CompanyPage() {
       setLoading(false);
     }, 1000);
   }, []);
+
+  const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
+  const canCreateOrDeleteOrUpdateIntern = currentUserRole === 'admin' || currentUserRole === 'manager';
 
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   /**
@@ -108,16 +113,20 @@ function CompanyPage() {
     },
     {
       render: (record) => (
-        <Row align="middle" justify="end">
-          <Col>
-            <CompanyForm record={record} />
-          </Col>
-          <Col className="mr">
-            <Button type="danger" onClick={() => removeCompany(record)} danger>
-              <DeleteOutlined />
-            </Button>
-          </Col>
-        </Row>
+        <>
+          {canCreateOrDeleteOrUpdateIntern && (
+            <Row align="middle" justify="end">
+              <Col>
+                <CompanyForm record={record} />
+              </Col>
+              <Col className="mr">
+                <Button type="danger" onClick={() => removeCompany(record)} danger>
+                  <DeleteOutlined />
+                </Button>
+              </Col>
+            </Row>
+          )}
+        </>
       ),
     },
   ];
@@ -137,11 +146,11 @@ function CompanyPage() {
               }}
               description="aucune société n'a été trouvée"
             >
-              <CompanyForm label="Créer une société" isCreatedForm />
+              {canCreateOrDeleteOrUpdateIntern && <CompanyForm label="Créer une société" isCreatedForm />}
             </Empty>
           ) : (
             <>
-              <CompanyForm label="Créer une société" isCreatedForm />
+              {canCreateOrDeleteOrUpdateIntern && <CompanyForm label="Créer une société" isCreatedForm />}
               <Table columns={COMPANY_COLUMN} dataSource={COMPANY_DATA} />
             </>
           )}
