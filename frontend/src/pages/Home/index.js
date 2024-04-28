@@ -1,15 +1,6 @@
-/* -------------------------------------------------------------------------- */
-/*                                Dependencies                                */
-/* -------------------------------------------------------------------------- */
-
-// Packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-// UI Components
 import { Row, Col, Typography, Statistic } from 'antd';
-
-// Local Components
 import Loader from '../../shared/Components/Loader';
 
 // reducers
@@ -18,23 +9,16 @@ import { fetchAllCompanies, selectAllCompanies } from '../../reducers/Companies.
 import { fetchAllInternship, selectAllInternships } from '../../reducers/Internship.slice';
 import { fetchAllInternshipRequest, selectAllInternshipRequests } from '../../reducers/InternshipRequest.slice';
 
-// Consts
 const { Title } = Typography;
 
-/* -------------------------------------------------------------------------- */
-/*                                  Home Page                                 */
-/* -------------------------------------------------------------------------- */
 function Home() {
-  /* ---------------------------------- HOOKS --------------------------------- */
   const [loading, setLoading] = useState(true);
-  // Selectors
+  const dispatch = useDispatch();
   const users = useSelector(selectAllUsers);
   const companies = useSelector(selectAllCompanies);
   const internships = useSelector(selectAllInternships);
   const internshipRequests = useSelector(selectAllInternshipRequests);
-  const dispatch = useDispatch();
 
-  /* --------------------------------- EFFECT --------------------------------- */
   useEffect(() => {
     dispatch(fetchAllUsers());
     dispatch(fetchAllCompanies());
@@ -43,24 +27,24 @@ function Home() {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
-  }, []);
+  }, [dispatch]);
 
-  /* --------------------------------- CONSTS --------------------------------- */
-  const USERS = users ? users.users : [];
-  const COMPANIES = companies ? companies.companies : [];
-  const INTERNSHIPS = internships ? internships.internships : [];
-  const INTERNSHIP_REQUESTS = internshipRequests ?? [];
-  const donnees = {
-    totalUtilisateurs: USERS?.length,
-    totalManagers: USERS?.filter((user) => user.role === 'manager').length,
-    totalStagiaires: USERS?.filter((user) => user.role === 'intern').length,
-    totalSuperviseurs: USERS?.filter((user) => user.role === 'supervisor').length,
-    totalEntreprises: COMPANIES?.length,
-    totalStages: INTERNSHIPS?.length,
-    totalStagesDemandes: INTERNSHIP_REQUESTS?.length,
-  };
+  const donnees = useMemo(() => {
+    const USERS = users?.users || [];
+    const COMPANIES = companies?.companies || [];
+    const INTERNSHIPS = internships?.internships || [];
+    const INTERNSHIP_REQUESTS = internshipRequests || [];
+    return {
+      totalUtilisateurs: USERS.length,
+      totalManagers: USERS.filter((user) => user.role === 'manager').length,
+      totalStagiaires: USERS.filter((user) => user.role === 'intern').length,
+      totalSuperviseurs: USERS.filter((user) => user.role === 'supervisor').length,
+      totalEntreprises: COMPANIES.length,
+      totalStages: INTERNSHIPS.length,
+      totalStagesDemandes: INTERNSHIP_REQUESTS.length,
+    };
+  }, [users, companies, internships, internshipRequests]);
 
-  /* -------------------------------- RENDERING ------------------------------- */
   if (loading) {
     return (
       <div style={{ textAlign: 'center', marginTop: '100px' }}>
@@ -68,6 +52,7 @@ function Home() {
       </div>
     );
   }
+
   return (
     <div style={{ padding: '20px' }}>
       <Title level={2} style={{ marginBottom: '30px', textAlign: 'center' }}>

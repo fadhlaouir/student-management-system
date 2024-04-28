@@ -1,66 +1,39 @@
-/* -------------------------------------------------------------------------- */
-/*                                Dependencies                                */
-/* -------------------------------------------------------------------------- */
-
-// Packages
-import React, { useEffect, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-
-// Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
-
-// UI Components
 import { Form, Button, notification, Row } from 'antd';
 import FormBuilder from 'antd-form-builder';
-
-// Reducers
 import { $login, selectSessionLoading } from '../../reducers/Session.slice';
-
-// Styles
 import './index.css';
 
-/* -------------------------------------------------------------------------- */
-/*                                 Login Page                                 */
-/* -------------------------------------------------------------------------- */
 function LoginPage() {
-  /* ---------------------------------- HOOKS --------------------------------- */
   const dispatch = useDispatch();
   const isLoading = useSelector(selectSessionLoading);
   const history = useHistory();
-  const windowWidthRef = useRef(window.innerWidth);
   const [form] = Form.useForm();
 
-  /* ----------------------------- RENDER HELPERS ----------------------------- */
-  const loginFormFields = {
-    fields: [
-      {
-        key: 'email',
-        placeholder: 'Adresse e-mail',
-        rules: [
-          {
-            type: 'email',
-            message: "L'entrée n'est pas valide E-mail!",
-          },
-          {
-            required: true,
-            message: 'Veuillez saisir votre e-mail !',
-          },
-        ],
-      },
-      {
-        key: 'password',
-        placeholder: 'Mot de passe',
-        widget: 'password',
-        rules: [
-          {
-            required: true,
-            message: 'Veuillez saisir votre mot de passe !',
-          },
-        ],
-      },
-    ],
-  };
+  const loginFormFields = useMemo(
+    () => ({
+      fields: [
+        {
+          key: 'email',
+          placeholder: 'Adresse e-mail',
+          rules: [
+            { type: 'email', message: "L'entrée n'est pas valide E-mail!" },
+            { required: true, message: 'Veuillez saisir votre e-mail !' },
+          ],
+        },
+        {
+          key: 'password',
+          placeholder: 'Mot de passe',
+          widget: 'password',
+          rules: [{ required: true, message: 'Veuillez saisir votre mot de passe !' }],
+        },
+      ],
+    }),
+    [],
+  );
 
   const onSubmit = (values) => {
     dispatch($login(values))
@@ -80,18 +53,6 @@ function LoginPage() {
       );
   };
 
-  const handleResize = () => {
-    windowWidthRef.current = window.innerWidth;
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  /* -------------------------------- RENDERING ------------------------------- */
   return (
     <>
       <Row justify="end" style={{ margin: '20px 20px 0 0' }}>
@@ -120,12 +81,9 @@ function LoginPage() {
           <p className="form-title">Bienvenue</p>
           <p className="form-description">Connectez-vous au tableau de bord</p>
           <FormBuilder form={form} meta={loginFormFields} className="mb-0" />
-
-          <Form.Item>
-            <Button htmlType="submit" type="primary" className="login-button" loading={isLoading}>
-              CONNEXION
-            </Button>
-          </Form.Item>
+          <Button htmlType="submit" type="primary" className="login-button" loading={isLoading}>
+            CONNEXION
+          </Button>
         </Form>
       </Row>
     </>

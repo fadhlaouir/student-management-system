@@ -1,52 +1,27 @@
-/* -------------------------------------------------------------------------- */
-/*                                Dependencies                                */
-/* -------------------------------------------------------------------------- */
-
-// Packages
 import React, { useEffect, useMemo, useState } from 'react';
-
-// Redux
+import { Modal, notification, Skeleton, Table, Row, Col, Button, Empty } from 'antd';
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSelector, useDispatch } from 'react-redux';
-
-// UI Components
-import { Table, Row, Col, Button, Modal, notification, Empty, Skeleton } from 'antd';
-import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-
-// reducers
 import { deleteCompany, fetchAllCompanies, selectAllCompanies } from '../../reducers/Companies.slice';
-
-// local components
 import CompanyForm from '../../components/CompanyForm/index';
 import { selectSessionUser } from '../../reducers/Session.slice';
 
-/* -------------------------------------------------------------------------- */
-/*                                Company Page                                */
-/* -------------------------------------------------------------------------- */
+const { confirm } = Modal;
+
 function CompanyPage() {
-  /* ---------------------------------- HOOKS --------------------------------- */
-  const { confirm } = Modal;
   const [loading, setLoading] = useState(true);
-  // Selectors
-  const CompaniesObject = useSelector(selectAllCompanies);
   const currentUser = useSelector(selectSessionUser);
   const dispatch = useDispatch();
+  const CompaniesObject = useSelector(selectAllCompanies);
 
   useEffect(() => {
-    dispatch(fetchAllCompanies());
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
+    dispatch(fetchAllCompanies()).then(() => setLoading(false));
+  }, [dispatch]);
 
   const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
   const canCreateOrDeleteOrUpdateIntern = currentUserRole === 'admin' || currentUserRole === 'manager';
 
-  /* ----------------------------- RENDER HELPERS ----------------------------- */
-  /**
-   *
-   * @param {object} entry data entry from form
-   */
   const removeCompany = (data) => {
     confirm({
       title: `Voulez-vous vraiment supprimer "${data?.name}"?`,
@@ -57,7 +32,7 @@ function CompanyPage() {
           .then(() => {
             notification.success({
               message: 'Supprimer la société',
-              description: 'La société à été supprimées avec succès',
+              description: 'La société a été supprimée avec succès',
             });
             dispatch(fetchAllCompanies());
           })
@@ -71,80 +46,62 @@ function CompanyPage() {
     });
   };
 
-  /* -------------------------------- CONSTANTS ------------------------------- */
-  const COMPANY = CompaniesObject && CompaniesObject.companies;
+  const COMPANY = CompaniesObject?.companies || [];
 
-  const COMPANY_DATA = COMPANY?.map((compnay, index) => ({
-    // in common
-    key: index,
-    _id: compnay._id,
-    name: compnay.name,
-    address: compnay.address,
-    phoneNumber: compnay.phoneNumber,
-    faxNumber: compnay.faxNumber,
-    email: compnay.email,
-  }));
+  const COMPANY_DATA = useMemo(
+    () =>
+      COMPANY.map((company, index) => ({
+        key: index,
+        _id: company._id,
+        name: company.name,
+        address: company.address,
+        phoneNumber: company.phoneNumber,
+        faxNumber: company.faxNumber,
+        email: company.email,
+      })),
+    [COMPANY],
+  );
 
-  const COMPANY_COLUMN = [
-    {
-      title: 'Nom de la société',
-      key: 'name',
-      dataIndex: 'name',
-    },
-    {
-      title: 'Adresse',
-      key: 'address',
-      dataIndex: 'address',
-    },
-    {
-      title: 'Numéro de téléphone',
-      key: 'phoneNumber',
-      dataIndex: 'phoneNumber',
-    },
-    {
-      title: 'Numéro de fax',
-      key: 'faxNumber',
-      dataIndex: 'faxNumber',
-    },
-    {
-      title: 'Email',
-      key: 'email',
-      dataIndex: 'email',
-    },
-    {
-      render: (record) => (
-        <>
-          {canCreateOrDeleteOrUpdateIntern && (
-            <Row align="middle" justify="end">
-              <Col>
-                <CompanyForm record={record} />
-              </Col>
-              <Col className="mr">
-                <Button type="danger" onClick={() => removeCompany(record)} danger>
-                  <DeleteOutlined />
-                </Button>
-              </Col>
-            </Row>
-          )}
-        </>
-      ),
-    },
-  ];
+  const COMPANY_COLUMN = useMemo(
+    () => [
+      { title: 'Nom de la société', key: 'name', dataIndex: 'name' },
+      { title: 'Adresse', key: 'address', dataIndex: 'address' },
+      { title: 'Numéro de téléphone', key: 'phoneNumber', dataIndex: 'phoneNumber' },
+      { title: 'Numéro de fax', key: 'faxNumber', dataIndex: 'faxNumber' },
+      { title: 'Email', key: 'email', dataIndex: 'email' },
+      {
+        render: (record) => (
+          <>
+            {canCreateOrDeleteOrUpdateIntern && (
+              <Row align="middle" justify="end">
+                <Col>
+                  <CompanyForm record={record} />
+                </Col>
+                <Col className="mr">
+                  <Button type="danger" onClick={() => removeCompany(record)} danger>
+                    <DeleteOutlined />
+                  </Button>
+                </Col>
+              </Row>
+            )}
+          </>
+        ),
+      },
+    ],
+    [canCreateOrDeleteOrUpdateIntern, removeCompany],
+  );
 
-  /* -------------------------------- RENDERING ------------------------------- */
   return (
     <div>
       {loading ? (
         <Skeleton active />
       ) : (
         <>
-          {COMPANY_DATA?.length === 0 ? (
+          {COMPANY_DATA.length === 0 ? (
             <Empty
               image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-              imageStyle={{
-                height: 250,
-              }}
-              description="aucune société n'a été trouvée"
+              imageStyle={{ height: 250 }}
+              description="Aucune société n'a été trouvée"
             >
               {canCreateOrDeleteOrUpdateIntern && <CompanyForm label="Créer une société" isCreatedForm />}
             </Empty>
