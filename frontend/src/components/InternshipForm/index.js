@@ -3,7 +3,7 @@
 /* -------------------------------------------------------------------------- */
 
 // Packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
 
@@ -20,6 +20,7 @@ import FormBuilder from 'antd-form-builder';
 import { createInternship, fetchAllInternship, updateInternship } from '../../reducers/Internship.slice';
 import { fetchAllCompanies, selectAllCompanies } from '../../reducers/Companies.slice';
 import { fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
+import { selectSessionUser } from '../../reducers/Session.slice';
 
 /* -------------------------------------------------------------------------- */
 /*                               Internship Form                              */
@@ -31,6 +32,10 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
   const dispatch = useDispatch();
   const companies = useSelector(selectAllCompanies);
   const users = useSelector(selectAllUsers);
+
+  const currentUser = useSelector(selectSessionUser);
+
+  const currentUserCompnay = useMemo(() => currentUser?.company, [currentUser]);
 
   useEffect(() => {
     dispatch(fetchAllInternship());
@@ -46,6 +51,12 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
    * @param {object} entry data entry from form
    */
   const onClickSubmit = (entry) => {
+    const dataToEnter = {
+      company: currentUserCompnay?.name,
+      manager: currentUser?._id,
+      ...entry,
+    };
+
     if (record) {
       dispatch(
         updateInternship({
@@ -74,7 +85,7 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
     } else {
       dispatch(
         createInternship({
-          ...entry,
+          ...dataToEnter,
         }),
       )
         .then(unwrapResult)
@@ -128,6 +139,8 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
             message: 'Titre de stage est obligatoire',
           },
         ],
+
+        disabled: currentUser?.role === 'admin',
       },
       {
         key: 'subject',
@@ -141,27 +154,31 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
             message: 'Sujet est obligatoire',
           },
         ],
+
+        disabled: currentUser?.role === 'admin',
       },
-      {
+      currentUser?.role === 'admin' && {
         key: 'supervisor',
         label: 'Encadrant',
         widget: 'select',
         initialValue: record?.supervisor ? getFullName(record?.supervisor) : null,
         options: supervisorOptions,
       },
-      {
-        key: 'company',
-        label: 'Entreprise',
-        widget: 'select',
-        initialValue: record?.company ? record.company?.name : null,
-        options: companiesOptions,
-      },
+      // {
+      //   key: 'company',
+      //   label: 'Entreprise',
+      //   widget: 'select',
+      //   initialValue: record?.company ? record.company?.name : null,
+      //   options: companiesOptions,
+      // },
       {
         key: 'startDate',
         label: 'Date de début',
         widget: 'date-picker',
         initialValue: record?.startDate ? moment.tz(record.startDate, 'Africa/Tunis') : null,
         rules: [{ required: true, message: 'Date de début est obligatoire' }],
+
+        disabled: currentUser?.role === 'admin',
       },
       {
         key: 'endDate',
@@ -174,13 +191,22 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
             validator(_, value) {
               const startDate = getFieldValue('startDate');
               if (!startDate || !value || startDate.isBefore(value)) {
-                return Promise.resolve();
+                // Check if endDate is more than one year after startDate
+                const oneYearAfterStartDate = moment(startDate).add(1, 'years');
+                if (value.isBefore(oneYearAfterStartDate)) {
+                  return Promise.resolve();
+                }
+                // eslint-disable-next-line prettier/prettier
+                return Promise.reject(new Error('End Date should not be more than one year after Start Date'));
               }
               return Promise.reject(new Error('End Date should be after Start Date'));
             },
           }),
         ],
+
+        disabled: currentUser?.role === 'admin',
       },
+
       {
         key: 'status',
         label: 'Status',
@@ -190,6 +216,8 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
           { label: 'Open', value: 'open' },
           { label: 'Closed', value: 'closed' },
         ],
+
+        disabled: currentUser?.role === 'admin',
       },
     ],
   };

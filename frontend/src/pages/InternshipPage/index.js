@@ -41,7 +41,7 @@ function InternshipPage() {
   }, []);
 
   const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
-  const canCreateOrDeleteOrUpdate = currentUserRole === 'admin' || currentUserRole === 'manager';
+  const canCreateOrDeleteOrUpdate = currentUserRole === 'manager' || currentUserRole === 'admin';
 
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   /**
@@ -76,10 +76,11 @@ function InternshipPage() {
   const INTERNSHIPS = InternshipObject && InternshipObject.internships;
 
   function getFullName(user) {
-    return `${user?.firstName} ${user?.lastName}`;
+    return user !== undefined ? `${user?.firstName} ${user?.lastName}` : 'Non assigne';
   }
-
-  const INTERNSHIP_DATA = INTERNSHIPS?.map((internship, index) => ({
+  const INTERNSHIP_DATA = INTERNSHIPS?.filter(
+    (int) => (currentUser?.role === 'manager' && int?.manager === currentUser._id) || currentUser?.role === 'admin',
+  ).map((internship, index) => ({
     key: index,
     _id: internship?._id,
     title: internship?.title,
@@ -87,7 +88,7 @@ function InternshipPage() {
     startDate: internship?.startDate,
     endDate: internship?.endDate,
     company: internship?.company,
-    supervisor: internship.supervisor,
+    supervisor: internship?.supervisor,
     status: internship?.status,
   }));
 
@@ -106,13 +107,12 @@ function InternshipPage() {
       title: 'Entreprise',
       key: 'company',
       dataIndex: 'company',
-      render: (record) => record?.name || 'Non assigné',
     },
     {
       title: 'Superviseur',
       key: 'supervisor',
       dataIndex: 'supervisor',
-      render: (record) => (record.supervisor !== null ? getFullName(record) : 'Non assigné'),
+      render: (record) => getFullName(record),
     },
     {
       title: 'Date de début',
@@ -166,11 +166,11 @@ function InternshipPage() {
               }}
               description="aucun stage n'a été trouvée"
             >
-              {canCreateOrDeleteOrUpdate && <InternshipForm label="Créer un stage" isCreatedForm />}
+              {currentUserRole === 'manager' && <InternshipForm label="Créer un stage" isCreatedForm />}
             </Empty>
           ) : (
             <>
-              {canCreateOrDeleteOrUpdate && <InternshipForm label="Créer un stage" isCreatedForm />}
+              {currentUserRole === 'manager' && <InternshipForm label="Créer un stage" isCreatedForm />}
               <Table columns={INTERNSHIP_COLUMN} dataSource={INTERNSHIP_DATA} />
             </>
           )}

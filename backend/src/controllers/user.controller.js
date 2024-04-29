@@ -52,8 +52,10 @@ const updateUserById = async (req, res) => {
 
     const updateFile = {};
     if (req.files?.file) {
-      // if (foundUser.file !== '') fs.unlinkSync(foundUser.file);
       updateFile.file = req.files.file[0].path.replace('\\', '/');
+    }
+    if (req.files?.cv) {
+      updateFile.cv = req.files.cv[0].path.replace('\\', '/');
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -83,7 +85,7 @@ const updateUserById = async (req, res) => {
  */
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().populate('company');
     res.status(200).json({ success: true, users });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

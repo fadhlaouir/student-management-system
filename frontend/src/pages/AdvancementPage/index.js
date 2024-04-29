@@ -40,7 +40,7 @@ function AdvancementPage() {
   }, []);
 
   const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
-  const canCreateOrDeleteOrUpdate = currentUserRole === 'admin' || currentUserRole === 'manager';
+  const canCreateOrDeleteOrUpdate = currentUserRole === 'manager';
 
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   /**

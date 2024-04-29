@@ -23,6 +23,7 @@ import { API_ENDPOINT } from '../../common/config';
 
 // style
 import '../../App.css';
+import { fetchAllCompanies, selectAllCompanies } from '../../reducers/Companies.slice';
 
 /* -------------------------------------------------------------------------- */
 /*                                Manager Form                                */
@@ -32,11 +33,13 @@ function ManagerForm({ isCreatedForm, label, record }) {
   const [form] = Form.useForm();
   const [showModal, setShowModal] = useState(false);
   const users = useSelector(selectAllUsers);
+  const companies = useSelector(selectAllCompanies);
   const forceUpdate = FormBuilder.useForceUpdate();
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllUsers());
+    dispatch(fetchAllCompanies());
   }, []);
 
   /* ----------------------------- RENDER HELPERS ----------------------------- */
@@ -50,6 +53,7 @@ function ManagerForm({ isCreatedForm, label, record }) {
     data.append('firstName', entry.firstName);
     data.append('lastName', entry.lastName);
     data.append('email', entry.email);
+    data.append('company', entry.company);
     if (entry.password) data.append('password', entry.password);
     data.append('phoneNumber', entry.phoneNumber);
     if (!record) data.append('role', 'manager');
@@ -160,6 +164,15 @@ function ManagerForm({ isCreatedForm, label, record }) {
             },
           },
         ],
+      },
+      {
+        key: 'company',
+        label: 'Société',
+        widget: 'select',
+        options: companies?.companies?.map((company) => ({
+          label: company.name,
+          value: company._id,
+        })),
       },
     ],
   };

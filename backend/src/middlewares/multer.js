@@ -36,7 +36,10 @@ var storage = multer.diskStorage({
 
 /* ---------------------------------- CONST --------------------------------- */
 const upload = multer({ storage: storage });
-const fileUpload = upload.fields([{ name: 'file', maxCount: 1 }]);
+const fileUpload = upload.fields([
+  { name: 'file', maxCount: 1 },
+  { name: 'cv', maxCount: 1 },
+]);
 
 // Multer config
 module.exports = { fileUpload };

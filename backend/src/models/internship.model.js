@@ -25,14 +25,16 @@ const InternshipSchema = new mongoose.Schema({
     enum: ['open', 'closed'],
     default: 'open',
   },
-  company: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Company',
-  },
+  company: String,
   supervisor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  manager: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  file: String,
 });
 
 module.exports = mongoose.model('Internship', InternshipSchema);

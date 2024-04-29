@@ -15,6 +15,7 @@ const Internship = require('../models/internship.model');
 async function createInternship(req, res) {
   try {
     const newInternship = await Internship.create(req.body);
+
     res.status(201).json(newInternship);
   } catch (error) {
     console.error('Error creating internship:', error);

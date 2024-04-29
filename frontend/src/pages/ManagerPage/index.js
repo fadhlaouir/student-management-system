@@ -78,6 +78,8 @@ function ManagerPage() {
     firstName: user?.firstName,
     lastName: user?.lastName,
     email: user?.email,
+    company: user?.company ? user?.company?.name : '-',
+    internship: user?.internship ? user?.internship?.title : '-',
     phoneNumber: user?.phoneNumber,
   }));
 
@@ -98,6 +100,16 @@ function ManagerPage() {
       title: 'E-mail',
       key: 'email',
       dataIndex: 'email',
+    },
+    {
+      title: 'Societé',
+      key: 'company',
+      dataIndex: 'company',
+    },
+    {
+      title: 'Stage Associé',
+      key: 'internship',
+      dataIndex: 'internship',
     },
     {
       title: 'Téléphone',

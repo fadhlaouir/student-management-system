@@ -21,8 +21,17 @@ const UserSchema = new Schema({
   speciality: String,
   phoneNumber: String,
   file: String,
+  CV: String,
   joined_at: Date,
   updated_at: Date,
+  company: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Company',
+  },
+  internship: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Internship',
+  },
 });
 
 /* -------------------------------------------------------------------------- */

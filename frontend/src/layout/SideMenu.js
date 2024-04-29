@@ -53,9 +53,7 @@ function SideMenu() {
       case 'manager':
         return [
           { key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> },
-          { key: '2', path: '/supervisors', name: 'Liste des encadrants', icon: <TeamOutlined /> },
           { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UsergroupAddOutlined /> },
-          { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
           { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
           { key: '7', path: '/all-requests', name: 'Demandes de stage', icon: <FileTextOutlined /> },
           { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },

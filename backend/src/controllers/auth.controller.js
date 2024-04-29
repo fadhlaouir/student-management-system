@@ -78,7 +78,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const foundUser = await User.findOne({ email });
+    const foundUser = await User.findOne({ email }).populate('company');
 
     if (!foundUser || !foundUser.comparePassword(password)) {
       return res.status(403).json({
@@ -94,11 +94,7 @@ const login = async (req, res) => {
     return res.json({
       success: true,
       token,
-      user: {
-        _id: foundUser._id,
-        email: foundUser.email,
-        role: foundUser.role,
-      },
+      user: foundUser,
     });
   } catch (error) {
     return res.status(500).json({
