@@ -51,6 +51,7 @@ const register = async (req, res) => {
       speciality,
       phoneNumber,
       file: req.files?.file ? req.files.file[0].path.replace('\\', '/') : '',
+      cv: req.files?.cv ? req.files.cv[0].path.replace('\\', '/') : '',
       joined_at: new Date(),
     });
 

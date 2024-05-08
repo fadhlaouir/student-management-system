@@ -21,7 +21,7 @@ const UserSchema = new Schema({
   speciality: String,
   phoneNumber: String,
   file: String,
-  CV: String,
+  cv: String,
   joined_at: Date,
   updated_at: Date,
   company: {

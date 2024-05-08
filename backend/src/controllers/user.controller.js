@@ -1,7 +1,6 @@
 /* -------------------------------------------------------------------------- */
 /*                                Dependencies                                */
 /* -------------------------------------------------------------------------- */
-const fs = require('fs');
 const User = require('../models/user.model');
 
 /* -------------------------------------------------------------------------- */
@@ -51,17 +50,19 @@ const updateUserById = async (req, res) => {
     // let foundUser = await User.findById(id);
 
     const updateFile = {};
+    const updateCV = {};
     if (req.files?.file) {
       updateFile.file = req.files.file[0].path.replace('\\', '/');
     }
     if (req.files?.cv) {
-      updateFile.cv = req.files.cv[0].path.replace('\\', '/');
+      updateCV.cv = req.files.cv[0].path.replace('\\', '/');
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
         ...updateFile,
+        ...updateCV,
         ...req.body,
         updated_at: Date.now(),
       },

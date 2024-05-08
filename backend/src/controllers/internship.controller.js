@@ -14,9 +14,37 @@ const Internship = require('../models/internship.model');
  */
 async function createInternship(req, res) {
   try {
-    const newInternship = await Internship.create(req.body);
+    const {
+      title,
+      subject,
+      startDate,
+      endDate,
+      status,
+      company,
+      supervisor,
+      manager,
+    } = req.body;
 
-    res.status(201).json(newInternship);
+    // const newInternship = await Internship.create(req.body);
+    const newInternship = new Internship({
+      title,
+      subject,
+      startDate,
+      endDate,
+      status,
+      company,
+      supervisor,
+      manager,
+      file: req.files?.file ? req.files.file[0].path.replace('\\', '/') : '',
+    });
+
+    await newInternship.save();
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Internship created successfully',
+      data: newInternship,
+    });
   } catch (error) {
     console.error('Error creating internship:', error);
     res.status(500).json({ error: 'Failed to create internship' });
@@ -98,6 +126,9 @@ async function updateInternship(req, res) {
     }
     if (req.body.status) {
       internship.status = req.body.status;
+    }
+    if (req.files?.file) {
+      internship.file = req.files.file[0].path.replace('\\', '/');
     }
 
     // Save the updated internship
