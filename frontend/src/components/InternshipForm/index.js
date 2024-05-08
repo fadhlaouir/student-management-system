@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* -------------------------------------------------------------------------- */
 /*                                Dependencies                                */
 /* -------------------------------------------------------------------------- */
@@ -6,21 +7,23 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 
 // UI Components
-import { Form, Button, Modal, notification, Row } from 'antd';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form, Button, Modal, notification, Row, Upload, message } from 'antd';
+import { EditOutlined, PlusOutlined, InboxOutlined } from '@ant-design/icons';
 import FormBuilder from 'antd-form-builder';
 
 // reducers
-import { createInternship, fetchAllInternship, updateInternship } from '../../reducers/Internship.slice';
-import { fetchAllCompanies, selectAllCompanies } from '../../reducers/Companies.slice';
+import { fetchAllInternship, updateInternship } from '../../reducers/Internship.slice';
+import { fetchAllCompanies } from '../../reducers/Companies.slice';
 import { fetchAllUsers, selectAllUsers } from '../../reducers/User.slice';
 import { selectSessionUser } from '../../reducers/Session.slice';
+import { API_ENDPOINT } from '../../common/config';
 
 /* -------------------------------------------------------------------------- */
 /*                               Internship Form                              */
@@ -30,12 +33,13 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
   const [showModal, setShowModal] = useState(false);
 
   const dispatch = useDispatch();
-  const companies = useSelector(selectAllCompanies);
+
   const users = useSelector(selectAllUsers);
+  const [fileList, setFileList] = useState([]);
 
   const currentUser = useSelector(selectSessionUser);
 
-  const currentUserCompnay = useMemo(() => currentUser?.company, [currentUser]);
+  const currentUserCompany = useMemo(() => currentUser?.company, [currentUser]);
 
   useEffect(() => {
     dispatch(fetchAllInternship());
@@ -46,63 +50,77 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
   /* ----------------------------- RENDER HELPERS ----------------------------- */
   const [form] = Form.useForm();
 
+  const fileProps = {
+    name: 'file',
+    multiple: false,
+    fileList,
+    beforeUpload: (file) => {
+      const isPdf = file.type === 'application/pdf';
+      if (!isPdf) {
+        message.error('You can only upload PDF files!');
+      }
+      setFileList([file]);
+      return false;
+    },
+    onChange: (info) => {
+      let fileList = [...info.fileList];
+
+      // 1. Limit the number of uploaded files
+      fileList = fileList.slice(-1);
+
+      // 2. Read from response and show file link
+      fileList = fileList.map((file) => {
+        if (file.response) {
+          // Component will show file.url as link
+          // eslint-disable-next-line no-param-reassign
+          file.url = file.response.url;
+        }
+        return file;
+      });
+
+      setFileList(fileList);
+    },
+  };
+
   /**
    *
    * @param {object} entry data entry from form
    */
   const onClickSubmit = (entry) => {
-    const dataToEnter = {
-      company: currentUserCompnay?.name,
-      manager: currentUser?._id,
-      ...entry,
+    const formData = new FormData();
+    formData.append('file', fileList[0]?.originFileObj);
+    Object.entries(entry).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    formData.append('company', currentUserCompany?.name);
+    formData.append('manager', currentUser?._id);
+
+    const requestConfig = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
     };
 
     if (record) {
-      dispatch(
-        updateInternship({
-          _id: record._id,
-          fields: {
-            ...entry,
-          },
-        }),
-      )
+      dispatch(updateInternship({ _id: record._id, fields: entry }))
         .then(() => {
-          notification.success({
-            message: 'Stage',
-            description: 'Stage Mis à jour avec succès',
-          });
+          notification.success({ message: 'Stage', description: 'Stage Mis à jour avec succès' });
           setShowModal(!showModal);
           dispatch(fetchAllInternship());
         })
-        .catch((error) =>
-          notification.error({
-            message: 'Stage',
-            description: error.message,
-          }),
-        )
+        .catch((error) => notification.error({ message: 'Stage', description: error.message }))
         .then(unwrapResult);
       form.resetFields();
     } else {
-      dispatch(
-        createInternship({
-          ...dataToEnter,
-        }),
-      )
-        .then(unwrapResult)
+      axios
+        .post(`${API_ENDPOINT}/v1/api/internship`, formData, requestConfig)
         .then(() => {
-          notification.success({
-            message: 'Stage',
-            description: 'Stage est créées avec succès',
-          });
+          notification.success({ message: 'Stage', description: 'Stage est créées avec succès' });
           setShowModal(!showModal);
           dispatch(fetchAllInternship());
         })
-        .catch((error) =>
-          notification.error({
-            message: 'Stage',
-            description: error.message,
-          }),
-        );
+        .catch((error) => notification.error({ message: 'Stage', description: error.message }));
       form.resetFields();
     }
   };
@@ -117,12 +135,6 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
         label: `${user.firstName} ${user.lastName}`,
         value: user._id,
       })) || [];
-
-  const companiesOptions =
-    companies?.companies?.map((company) => ({
-      label: company.name,
-      value: company._id,
-    })) || [];
 
   /* -------------------------------- CONSTANTS ------------------------------- */
   const FIELDS = {
@@ -157,20 +169,6 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
 
         disabled: currentUser?.role === 'admin',
       },
-      currentUser?.role === 'admin' && {
-        key: 'supervisor',
-        label: 'Encadrant',
-        widget: 'select',
-        initialValue: record?.supervisor ? getFullName(record?.supervisor) : null,
-        options: supervisorOptions,
-      },
-      // {
-      //   key: 'company',
-      //   label: 'Entreprise',
-      //   widget: 'select',
-      //   initialValue: record?.company ? record.company?.name : null,
-      //   options: companiesOptions,
-      // },
       {
         key: 'startDate',
         label: 'Date de début',
@@ -222,6 +220,18 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
     ],
   };
 
+  const SUPERVISOR_FIELD = {
+    columns: 2,
+    fields: [
+      {
+        key: 'supervisor',
+        label: 'Encadrant',
+        widget: 'select',
+        initialValue: record?.supervisor ? getFullName(record?.supervisor) : null,
+        options: supervisorOptions,
+      },
+    ],
+  };
   /* -------------------------------- RENDERING ------------------------------- */
   return (
     <div>
@@ -249,6 +259,24 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
           encType="multipart/form-data"
         >
           <FormBuilder form={form} meta={FIELDS} />
+          {!record && (
+            <Form.Item name="file" label="Upload PDF File">
+              <Upload.Dragger {...fileProps}>
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+              </Upload.Dragger>
+            </Form.Item>
+          )}
+          {record && record?.file && (
+            <Form.Item name="Description de stage" label="Description de stage">
+              <a href={`${API_ENDPOINT}/${record.file}`} target="_blank" rel="noopener noreferrer">
+                Télécharger le Description de stage
+              </a>
+            </Form.Item>
+          )}
+          {currentUser?.role === 'admin' && <FormBuilder form={form} meta={SUPERVISOR_FIELD} />}
 
           <Row align="middle" justify="center">
             {!onlyFormItems && (

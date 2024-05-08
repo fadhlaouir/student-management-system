@@ -1,28 +1,11 @@
-/* -------------------------------------------------------------------------- */
-/*                                Dependencies                                */
-/* -------------------------------------------------------------------------- */
-// Packages
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-
-// Redux
-import { useSelector, useDispatch } from 'react-redux';
-
-// UI Components
-import { Row, Col, Layout, Divider, Button } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
-
-// Redux
+import { useSelector, useDispatch } from 'react-redux';
+import { Row, Col, Layout, Divider, Button } from 'antd';
 import { selectSessionUser, $logout } from '../reducers/Session.slice';
 
-// Styles
-import './index.css';
-
-/* -------------------------------------------------------------------------- */
-/*                                   Top Bar                                  */
-/* -------------------------------------------------------------------------- */
 function TopBar() {
-  /* ---------------------------------- HOOKS --------------------------------- */
   const { Header } = Layout;
   const dispatch = useDispatch();
   const history = useHistory();
@@ -39,8 +22,13 @@ function TopBar() {
     };
   }, []);
 
+  const handleLogout = useCallback(() => {
+    dispatch($logout());
+    history.push('/login');
+  }, [dispatch, history]);
+
   const userName = useMemo(() => user?.email, [user]);
-  /* -------------------------------- RENDERING ------------------------------- */
+
   return (
     <Header id="top-bar" className="header">
       <Row align="middle" justify="space-between">
@@ -52,24 +40,13 @@ function TopBar() {
         </Col>
         <Col>
           <Row align="middle" justify="space-around">
-            {userName && (
+            {userName && windowWidthRef.current > 800 && (
               <Col>
-                {windowWidthRef.current > 800 && (
-                  <Row align="middle" justify="space-between">
-                    <h1 className="user-name">{userName}</h1>
-                  </Row>
-                )}
+                <h1 className="user-name">{userName}</h1>
               </Col>
             )}
             <Col>
-              <Button
-                className="top-bar-button"
-                icon={<LogoutOutlined />}
-                onClick={() => {
-                  dispatch($logout());
-                  history.push('/login');
-                }}
-              />
+              <Button className="top-bar-button" icon={<LogoutOutlined />} onClick={handleLogout} />
             </Col>
           </Row>
         </Col>

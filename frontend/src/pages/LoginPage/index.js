@@ -2,10 +2,13 @@ import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
-import { Form, Button, notification, Row } from 'antd';
+import { Form, Button, notification, Row, Col } from 'antd';
 import FormBuilder from 'antd-form-builder';
 import { $login, selectSessionLoading } from '../../reducers/Session.slice';
 import './index.css';
+
+// Import your image
+import IMAGE from '../../assets/images/background.jpg';
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -21,14 +24,14 @@ function LoginPage() {
           placeholder: 'Adresse e-mail',
           rules: [
             { type: 'email', message: "L'entrée n'est pas valide E-mail!" },
-            { required: true, message: 'Veuillez saisir votre e-mail !' },
+            { required: true, message: 'Veuillez saisir votre e-mail !' },
           ],
         },
         {
           key: 'password',
           placeholder: 'Mot de passe',
           widget: 'password',
-          rules: [{ required: true, message: 'Veuillez saisir votre mot de passe !' }],
+          rules: [{ required: true, message: 'Veuillez saisir votre mot de passe !' }],
         },
       ],
     }),
@@ -54,23 +57,11 @@ function LoginPage() {
   };
 
   return (
-    <>
-      <Row justify="end" style={{ margin: '20px 20px 0 0' }}>
-        Le bouton connexion ne fonctionne pas ?
-      </Row>
-      <Row justify="end">
-        <Button
-          type="primary"
-          style={{ margin: '20px 40px' }}
-          onClick={() => {
-            window.localStorage.clear();
-            window.location.reload();
-          }}
-        >
-          Rafraîchir la page
-        </Button>
-      </Row>
-      <Row align="center" justify="center">
+    <Row align="middle" justify="end">
+      <Col xs={24} md={12}>
+        <img src={IMAGE} alt="Your Image" style={{ width: '100%', height: 'auto' }} />
+      </Col>
+      <Col xs={24} md={12}>
         <Form
           name="login-form"
           onFinish={onSubmit}
@@ -85,8 +76,21 @@ function LoginPage() {
             CONNEXION
           </Button>
         </Form>
-      </Row>
-    </>
+        <Row style={{ marginTop: '40px' }} align="middle">
+          Le bouton connexion ne fonctionne pas ?
+          <Button
+            style={{ marginLeft: '20px' }}
+            type="primary"
+            onClick={() => {
+              window.localStorage.clear();
+              window.location.reload();
+            }}
+          >
+            Rafraîchir la page
+          </Button>
+        </Row>
+      </Col>
+    </Row>
   );
 }
 

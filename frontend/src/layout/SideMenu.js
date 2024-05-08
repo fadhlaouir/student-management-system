@@ -1,34 +1,22 @@
-/* -------------------------------------------------------------------------- */
-/*                                Dependencies                                */
-/* -------------------------------------------------------------------------- */
-// Packages
 import React, { useMemo, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-
-// UI Components
 import { Layout, Menu } from 'antd';
 import {
   HomeOutlined,
-  FileTextOutlined,
+  FileOutlined,
   TeamOutlined,
-  UsergroupAddOutlined,
-  SolutionOutlined,
+  UserAddOutlined,
+  IdcardOutlined,
   ShopOutlined,
 } from '@ant-design/icons';
-
-// Styles
-import './index.css';
 import { useSelector } from 'react-redux';
 import { selectSessionUser } from '../reducers/Session.slice';
 
-// Consts
+import './index.css';
+
 const { Sider } = Layout;
 
-/* -------------------------------------------------------------------------- */
-/*                                  Side Menu                                 */
-/* -------------------------------------------------------------------------- */
 function SideMenu() {
-  /* ---------------------------------- HOOKS --------------------------------- */
   const location = useLocation();
   const history = useHistory();
   const [collapsed, setCollapsed] = useState(false);
@@ -36,45 +24,45 @@ function SideMenu() {
 
   const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
 
-  // Define routes based on user role
   const routes = useMemo(() => {
+    // Define routes based on user role
     switch (currentUserRole) {
       case 'admin':
         return [
           { key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> },
           { key: '2', path: '/supervisors', name: 'Liste des encadrants', icon: <TeamOutlined /> },
-          { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UsergroupAddOutlined /> },
-          { key: '4', path: '/managers', name: 'Liste des managers', icon: <SolutionOutlined /> },
+          { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UserAddOutlined /> },
+          { key: '4', path: '/managers', name: 'Liste des managers', icon: <IdcardOutlined /> },
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
-          { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
-          { key: '7', path: '/all-requests', name: 'Demandes de stage', icon: <FileTextOutlined /> },
-          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },
+          { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileOutlined /> },
+          { key: '7', path: '/all-requests', name: 'Demandes de stage', icon: <FileOutlined /> },
+          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UserAddOutlined /> },
         ];
       case 'manager':
         return [
           { key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> },
-          { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UsergroupAddOutlined /> },
-          { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
-          { key: '7', path: '/all-requests', name: 'Demandes de stage', icon: <FileTextOutlined /> },
-          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },
+          { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UserAddOutlined /> },
+          { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileOutlined /> },
+          { key: '7', path: '/all-requests', name: 'Demandes de stage', icon: <FileOutlined /> },
+          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UserAddOutlined /> },
         ];
       case 'intern':
         return [
           { key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> },
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
-          { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
-          { key: '7', path: '/my-requests', name: 'Mes Demandes', icon: <FileTextOutlined /> },
-          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },
-          { key: '9', path: '/me', name: 'Mes Documents', icon: <UsergroupAddOutlined /> },
+          { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileOutlined /> },
+          { key: '7', path: '/my-requests', name: 'Mes Demandes', icon: <FileOutlined /> },
+          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UserAddOutlined /> },
+          { key: '9', path: '/me', name: 'Mes Documents', icon: <UserAddOutlined /> },
         ];
       case 'supervisor':
         return [
           { key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> },
-          { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UsergroupAddOutlined /> },
+          { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UserAddOutlined /> },
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
-          { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileTextOutlined /> },
-          { key: '7', path: '/my-requests', name: 'Mes Stages', icon: <FileTextOutlined /> },
-          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UsergroupAddOutlined /> },
+          { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileOutlined /> },
+          { key: '7', path: '/my-requests', name: 'Mes Stages', icon: <FileOutlined /> },
+          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UserAddOutlined /> },
         ];
       default:
         return [{ key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> }];
@@ -91,12 +79,10 @@ function SideMenu() {
     history.push(clicked.path);
   };
 
-  // eslint-disable-next-line no-shadow
   const handleCollapse = (collapsed) => {
     setCollapsed(collapsed);
   };
 
-  /* -------------------------------- RENDERING ------------------------------- */
   return (
     <Sider
       id="sider-menu"
@@ -106,9 +92,9 @@ function SideMenu() {
       breakpoint="lg"
       collapsedWidth="0"
       trigger={null}
+      width={220}
     >
-      <div className="logo" />
-      <Menu theme="light" mode="inline" defaultSelectedKeys={['1']} selectedKeys={[selectedKey]} onClick={onClickMenu}>
+      <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} selectedKeys={[selectedKey]} onClick={onClickMenu}>
         {routes.map((item) => (
           <Menu.Item key={item.key} icon={item.icon}>
             <Link to={item.path}>{item.name}</Link>

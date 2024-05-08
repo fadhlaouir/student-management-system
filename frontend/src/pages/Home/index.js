@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Typography, Statistic } from 'antd';
+import { Row, Col, Typography, Statistic, Card } from 'antd';
+import { UserOutlined, TeamOutlined, UsergroupAddOutlined, ShopOutlined, FileTextOutlined } from '@ant-design/icons';
 import Loader from '../../shared/Components/Loader';
 
 // reducers
@@ -12,77 +13,101 @@ import { fetchAllInternshipRequest, selectAllInternshipRequests } from '../../re
 const { Title } = Typography;
 
 function Home() {
-  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  const users = useSelector(selectAllUsers);
-  const companies = useSelector(selectAllCompanies);
-  const internships = useSelector(selectAllInternships);
-  const internshipRequests = useSelector(selectAllInternshipRequests);
 
+  // Fetch data from Redux store
   useEffect(() => {
     dispatch(fetchAllUsers());
     dispatch(fetchAllCompanies());
     dispatch(fetchAllInternship());
     dispatch(fetchAllInternshipRequest());
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
   }, [dispatch]);
 
-  const donnees = useMemo(() => {
+  // Select data from Redux store
+  const { users, companies, internships, internshipRequests } = useSelector((state) => ({
+    users: selectAllUsers(state),
+    companies: selectAllCompanies(state),
+    internships: selectAllInternships(state),
+    internshipRequests: selectAllInternshipRequests(state),
+  }));
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (users && companies && internships && internshipRequests) {
+      setLoading(false);
+    }
+  }, [users, companies, internships, internshipRequests]);
+
+  // Calculate statistics
+  const data = useMemo(() => {
     const USERS = users?.users || [];
     const COMPANIES = companies?.companies || [];
     const INTERNSHIPS = internships?.internships || [];
     const INTERNSHIP_REQUESTS = internshipRequests || [];
     return {
-      totalUtilisateurs: USERS.length,
+      totalUsers: USERS.length,
       totalManagers: USERS.filter((user) => user.role === 'manager').length,
-      totalStagiaires: USERS.filter((user) => user.role === 'intern').length,
-      totalSuperviseurs: USERS.filter((user) => user.role === 'supervisor').length,
-      totalEntreprises: COMPANIES.length,
-      totalStages: INTERNSHIPS.length,
-      totalStagesDemandes: INTERNSHIP_REQUESTS.length,
+      totalInterns: USERS.filter((user) => user.role === 'intern').length,
+      totalSupervisors: USERS.filter((user) => user.role === 'supervisor').length,
+      totalCompanies: COMPANIES.length,
+      totalInternships: INTERNSHIPS.length,
+      totalInternshipRequests: INTERNSHIP_REQUESTS.length,
     };
   }, [users, companies, internships, internshipRequests]);
 
   if (loading) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: '100px' }}>
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Title level={2} style={{ marginBottom: '30px', textAlign: 'center' }}>
+    <div className="home-container">
+      <Title level={2} className="home-title">
         Tableau de Bord
       </Title>
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} md={8}>
-          <Statistic title="Total Utilisateurs" value={donnees.totalUtilisateurs} />
+          <Card>
+            <Statistic title="Total Utilisateurs" value={data.totalUsers} prefix={<UserOutlined />} />
+          </Card>
         </Col>
         <Col xs={24} sm={12} md={8}>
-          <Statistic title="Total Managers" value={donnees.totalManagers} />
+          <Card>
+            <Statistic title="Total Managers" value={data.totalManagers} prefix={<TeamOutlined />} />
+          </Card>
         </Col>
         <Col xs={24} sm={12} md={8}>
-          <Statistic title="Total Stagiaires" value={donnees.totalStagiaires} />
-        </Col>
-      </Row>
-      <Row gutter={[16, 16]} style={{ marginTop: '30px' }}>
-        <Col xs={24} sm={12} md={8}>
-          <Statistic title="Total Encadrants" value={donnees.totalSuperviseurs} />
-        </Col>
-        <Col xs={24} sm={12} md={8}>
-          <Statistic title="Total Entreprises" value={donnees.totalEntreprises} />
-        </Col>
-        <Col xs={24} sm={12} md={8}>
-          <Statistic title="Total Stages" value={donnees.totalStages} />
+          <Card>
+            <Statistic title="Total Stagiaires" value={data.totalInterns} prefix={<UsergroupAddOutlined />} />
+          </Card>
         </Col>
       </Row>
-      <Row gutter={[16, 16]} style={{ marginTop: '30px' }}>
+      <Row gutter={[16, 16]} className="home-row" style={{ marginTop: '20px' }}>
         <Col xs={24} sm={12} md={8}>
-          <Statistic title="Total Stages Demandés" value={donnees.totalStagesDemandes} />
+          <Card>
+            <Statistic title="Total Encadrants" value={data.totalSupervisors} prefix={<TeamOutlined />} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+          <Card>
+            <Statistic title="Total Entreprises" value={data.totalCompanies} prefix={<ShopOutlined />} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+          <Card>
+            <Statistic title="Total Stages" value={data.totalInternships} prefix={<FileTextOutlined />} />
+          </Card>
+        </Col>
+      </Row>
+      <Row gutter={[16, 16]} className="home-row" style={{ marginTop: '20px' }}>
+        <Col xs={24} sm={12} md={8}>
+          <Card>
+            <Statistic
+              title="Total Stages Demandés"
+              value={data.totalInternshipRequests}
+              prefix={<FileTextOutlined />}
+            />
+          </Card>
         </Col>
       </Row>
     </div>

@@ -119,15 +119,15 @@ function InternPage() {
     },
     {
       render: (record) => (
-        <Row align="middle" justify="space-between">
-          <Col>
+        <Row align="middle" justify="end">
+          <Col style={{ marginRight: '10px' }}>
             <a href={`mailto:${record.email}`}>
               <Button>Contact</Button>
             </a>
           </Col>
           {canCreateOrDeleteOrUpdate && (
             <>
-              <Col>
+              <Col style={{ marginRight: '10px' }}>
                 <InternForm record={record} />
               </Col>
               <Col>

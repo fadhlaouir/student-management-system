@@ -4,22 +4,19 @@
 
 // Packages
 import React, { useEffect, useMemo, useState } from 'react';
-
-// Redux
+import { Modal, notification, Skeleton, Table, Button, Empty, Row, Col } from 'antd';
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSelector, useDispatch } from 'react-redux';
 
-// UI Components
-import { Table, Row, Col, Button, Modal, notification, Empty, Skeleton } from 'antd';
-import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-
-// reducers
+// Redux
 import { deleteInternship, fetchAllInternship, selectAllInternships } from '../../reducers/Internship.slice';
+import { selectSessionUser } from '../../reducers/Session.slice';
 
 // local components
 import InternshipForm from '../../components/InternshipForm/index';
 import { localMoment } from '../../common/helpers';
-import { selectSessionUser } from '../../reducers/Session.slice';
+import { API_ENDPOINT } from '../../common/config';
 
 /* -------------------------------------------------------------------------- */
 /*                               Internship Page                              */
@@ -28,8 +25,9 @@ function InternshipPage() {
   /* ---------------------------------- HOOKS --------------------------------- */
   const { confirm } = Modal;
   const [loading, setLoading] = useState(true);
+
   // Selectors
-  const InternshipObject = useSelector(selectAllInternships);
+  const internships = useSelector(selectAllInternships);
   const currentUser = useSelector(selectSessionUser);
   const dispatch = useDispatch();
 
@@ -44,10 +42,6 @@ function InternshipPage() {
   const canCreateOrDeleteOrUpdate = currentUserRole === 'manager' || currentUserRole === 'admin';
 
   /* ----------------------------- RENDER HELPERS ----------------------------- */
-  /**
-   *
-   * @param {object} entry data entry from form
-   */
   const removeCompany = (data) => {
     confirm({
       title: `Voulez-vous vraiment supprimer "${data?.title}"?`,
@@ -73,7 +67,7 @@ function InternshipPage() {
   };
 
   /* -------------------------------- CONSTANTS ------------------------------- */
-  const INTERNSHIPS = InternshipObject && InternshipObject.internships;
+  const INTERNSHIPS = internships && internships?.internships;
 
   function getFullName(user) {
     return user !== undefined ? `${user?.firstName} ${user?.lastName}` : 'Non assigne';
@@ -90,6 +84,7 @@ function InternshipPage() {
     company: internship?.company,
     supervisor: internship?.supervisor,
     status: internship?.status,
+    file: internship?.file,
   }));
 
   const INTERNSHIP_COLUMN = [
@@ -125,6 +120,22 @@ function InternshipPage() {
       key: 'endDate',
       dataIndex: 'endDate',
       render: (record) => localMoment(record.endDate),
+    },
+    {
+      title: 'Description de stage',
+      key: 'file',
+      dataIndex: 'file',
+      render: (record) => (
+        <>
+          {record ? (
+            <a href={`${API_ENDPOINT}/${record}`} target="_blank" rel="noopener noreferrer">
+              Télécharger le rapport de stage
+            </a>
+          ) : (
+            'Aucun rapport de stage'
+          )}
+        </>
+      ),
     },
     {
       title: 'Statut',

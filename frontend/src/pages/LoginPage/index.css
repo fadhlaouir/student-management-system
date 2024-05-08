@@ -17,8 +17,7 @@
 }
 
 #login-form {
-    width: 300px;
-    margin-top: 10%
+    width: 90%
 }
 
 #login-form p {
@@ -43,9 +42,4 @@
 .form-message {
     color: #3a3a3a;
     font-weight: bold;
-}
-
-.atgmo-logo {
-    max-width: 200px;
-    margin: 60px 0px;
 }
