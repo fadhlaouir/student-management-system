@@ -107,11 +107,6 @@ function ManagerPage() {
       dataIndex: 'company',
     },
     {
-      title: 'Stage Associé',
-      key: 'internship',
-      dataIndex: 'internship',
-    },
-    {
       title: 'Téléphone',
       key: 'phoneNumber',
       dataIndex: 'phoneNumber',

@@ -173,6 +173,7 @@ function ManagerForm({ isCreatedForm, label, record }) {
           label: company.name,
           value: company._id,
         })),
+        initialValue: record?.company,
       },
     ],
   };
