@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import jwt_decode from 'jwt-decode';
 
 // route components
-import MyInternshipRequestForm from './pages/MyInternshipRequestPage';
+import MyInternshipRequestPage from './pages/MyInternshipRequestPage';
 import SupervisorPage from './pages/SupervisorPage';
 import InternshipPage from './pages/InternshipPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -80,7 +80,7 @@ export const renderRoutes = () => (
       <LayoutRoute exact path="/interns" component={InternPage} layout={App} />
       <LayoutRoute exact path="/companies" component={CompanyPage} layout={App} />
       <LayoutRoute exact path="/programs" component={InternshipPage} layout={App} />
-      <LayoutRoute exact path="/my-requests" component={MyInternshipRequestForm} layout={App} />
+      <LayoutRoute exact path="/my-requests" component={MyInternshipRequestPage} layout={App} />
       <LayoutRoute exact path="/all-requests" component={InternshipRequestPage} layout={App} />
       <LayoutRoute exact path="/advancements" component={AdvancementPage} layout={App} />
       <LayoutRoute exact path="/details/:id" component={Profile} layout={App} />

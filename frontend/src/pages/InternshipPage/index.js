@@ -73,7 +73,10 @@ function InternshipPage() {
     return user !== undefined ? `${user?.firstName} ${user?.lastName}` : 'Non assigne';
   }
   const INTERNSHIP_DATA = INTERNSHIPS?.filter(
-    (int) => (currentUser?.role === 'manager' && int?.manager === currentUser._id) || currentUser?.role === 'admin',
+    (int) =>
+      (currentUser?.role === 'manager' && int?.manager === currentUser._id) ||
+      currentUser?.role === 'admin' ||
+      currentUser?.role === 'intern',
   ).map((internship, index) => ({
     key: index,
     _id: internship?._id,

@@ -103,7 +103,7 @@ function InternshipRequestPage() {
       title: 'Nom de la société',
       key: 'internship',
       dataIndex: 'internship',
-      render: (record) => record?.company?.name ?? 'Non assigné',
+      render: (record) => record?.company ?? 'Non assigné',
     },
     {
       title: "Nom de l'encadrant",

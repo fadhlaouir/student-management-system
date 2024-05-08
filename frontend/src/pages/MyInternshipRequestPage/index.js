@@ -54,12 +54,13 @@ function MyInternshipRequestPage() {
       },
     });
   };
-
+  console.log('internshipRequests', internshipRequests);
+  console.log('currentUser', currentUser);
   const internshipData = useMemo(() => {
     switch (currentUserRole) {
       case 'intern':
         return internshipRequests
-          .filter((request) => request.intern?._id === currentUser._id)
+          ?.filter((request) => request.intern?._id === currentUser._id)
           .map((request, index) => ({
             key: index,
             _id: request?._id,
@@ -69,9 +70,19 @@ function MyInternshipRequestPage() {
           }));
       case 'supervisor':
         return internshipRequests
-          .filter(
+          ?.filter(
             (request) => request?.internship?.supervisor?._id === currentUser._id && request?.status === 'accepted',
           )
+          .map((request, index) => ({
+            key: index,
+            _id: request?._id,
+            status: request?.status,
+            intern: request?.intern,
+            internship: request?.internship,
+          }));
+      case 'manager':
+        return internshipRequests
+          ?.filter((request) => request?.internship?.manager === currentUser._id && request?.status === 'accepted')
           .map((request, index) => ({
             key: index,
             _id: request?._id,
@@ -103,7 +114,7 @@ function MyInternshipRequestPage() {
       title: 'Nom de la société',
       key: 'company',
       dataIndex: 'internship',
-      render: (record) => record?.company?.name ?? 'Non assigné',
+      render: (record) => record?.company ?? 'Non assigné',
     },
     {
       title: "Nom de l'encadrant",
@@ -132,7 +143,7 @@ function MyInternshipRequestPage() {
   ];
 
   const intenshipLength = internships.internships?.length;
-
+  console.log('internshipData', internshipData);
   return (
     <div>
       {loading ? (

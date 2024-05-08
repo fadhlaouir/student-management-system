@@ -60,8 +60,7 @@ function SideMenu() {
           { key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> },
           { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UserAddOutlined /> },
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
-          { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileOutlined /> },
-          { key: '7', path: '/my-requests', name: 'Mes Stages', icon: <FileOutlined /> },
+          { key: '7', path: '/my-requests', name: 'Mes Stages associe', icon: <FileOutlined /> },
           { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UserAddOutlined /> },
         ];
       default:
