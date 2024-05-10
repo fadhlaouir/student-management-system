@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 
 // UI Components
-import { Form, Button, Modal, notification, Row } from 'antd';
+import { Form, Button, Modal, notification, Row, message } from 'antd';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import FormBuilder from 'antd-form-builder';
 
@@ -124,12 +124,24 @@ function AdvancementForm({ onChange, onlyFormItems, isCreatedForm, label, record
           form.setFieldsValue({ intern: null });
           form.setFieldsValue({ intern: filteredInterns(internshipId) });
         },
+        rules: [
+          {
+            required: true,
+            message: 'Internship is required',
+          },
+        ],
       },
       {
         key: 'intern',
         label: 'Intern',
         widget: 'select',
         options: uniqueInterns,
+        rules: [
+          {
+            required: true,
+            message: 'Intern is required',
+          },
+        ],
       },
       {
         key: 'title',

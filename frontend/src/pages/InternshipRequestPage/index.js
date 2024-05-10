@@ -10,10 +10,12 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { useSelector, useDispatch } from 'react-redux';
 
 // UI Components
-import { Table, Row, Col, Button, notification, Empty, Skeleton } from 'antd';
+import { Table, Row, Col, Button, notification, Empty, Skeleton, Modal } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 // reducers
 import {
+  deleteInternshipRequest,
   fetchAllInternshipRequest,
   selectAllInternshipRequests,
   updateInternshipRequest,
@@ -29,6 +31,7 @@ import { selectSessionUser } from '../../reducers/Session.slice';
 function InternshipRequestPage() {
   /* ---------------------------------- HOOKS --------------------------------- */
   const [loading, setLoading] = useState(true);
+  const { confirm } = Modal;
   // Selectors
   const currentUser = useSelector(selectSessionUser);
   const InternshipRequestObject = useSelector(selectAllInternshipRequests);
@@ -43,11 +46,37 @@ function InternshipRequestPage() {
   }, []);
   const currentUserRole = useMemo(() => currentUser?.role, [currentUser]);
   /* ----------------------------- RENDER HELPERS ----------------------------- */
+
+  const remoreRequest = (data) => {
+    confirm({
+      title: 'Êtes-vous sûr de vouloir rejeter cette demande de stage ?',
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        dispatch(deleteInternshipRequest(data._id))
+          .then(unwrapResult)
+          .then(() => {
+            notification.success({
+              message: 'Supprimer la demande',
+              description: 'La demande a été rejeter avec succès',
+            });
+            dispatch(fetchAllInternshipRequest());
+          })
+          .catch((err) =>
+            notification.error({
+              message: 'Supprimer la demande',
+              description: err.error.message,
+            }),
+          );
+      },
+    });
+  };
+
   /**
    *
    * @param {object} entry data entry from form
    */
-  const updateRequest = (data, type) => {
+  // Dispatch update request directly for 'accepted' type
+  const acceptRequest = (data, type) => {
     dispatch(
       updateInternshipRequest({
         _id: data._id,
@@ -58,7 +87,7 @@ function InternshipRequestPage() {
       .then(() => {
         notification.success({
           message: 'Demande de stage',
-          description: 'La demande a été modifiée avec succès',
+          description: 'La demande a été accepté avec succès',
         });
         dispatch(fetchAllInternshipRequest());
       })
@@ -112,6 +141,12 @@ function InternshipRequestPage() {
       render: (record) => getFullName(record?.supervisor) || 'Non assigné',
     },
     {
+      title: 'Nom du Manager',
+      key: 'internship',
+      dataIndex: 'internship',
+      render: (record) => getFullName(record?.manager) || 'Non assigné',
+    },
+    {
       title: 'Statut',
       key: 'status',
       dataIndex: 'status',
@@ -120,12 +155,16 @@ function InternshipRequestPage() {
       render: (record) => (
         <Row align="middle" justify="end">
           <Col>
-            <Button type="default" onClick={() => updateRequest(record, 'accepted')}>
+            <Button
+              type="default"
+              onClick={() => acceptRequest(record, 'accepted')}
+              disabled={record.status === 'accepted'}
+            >
               Accepter
             </Button>
           </Col>
           <Col className="mr">
-            <Button type="danger" onClick={() => updateRequest(record, 'rejected')} danger>
+            <Button type="danger" onClick={() => remoreRequest(record)} danger>
               Refuser
             </Button>
           </Col>

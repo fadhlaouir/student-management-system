@@ -200,6 +200,21 @@ function InternshipForm({ onChange, onlyFormItems, isCreatedForm, label, record 
               return Promise.reject(new Error('End Date should be after Start Date'));
             },
           }),
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              const startDate = getFieldValue('startDate');
+              if (!startDate || !value || startDate.isBefore(value)) {
+                // Check if endDate is more than one year after startDate
+                const oneMonthAfterStartDate = moment(startDate).add(1, 'months');
+                if (value.isAfter(oneMonthAfterStartDate)) {
+                  return Promise.resolve();
+                }
+                // eslint-disable-next-line prettier/prettier
+                return Promise.reject(new Error('End Date should be more than one month after Start Date'));
+              }
+              return Promise.reject(new Error('End Date should be after Start Date'));
+            },
+          }),
         ],
 
         disabled: currentUser?.role === 'admin',

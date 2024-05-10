@@ -40,22 +40,20 @@ function MyInternshipRequestPage() {
           .then(unwrapResult)
           .then(() => {
             notification.success({
-              message: 'Supprimer le stage',
-              description: 'Le stage a été supprimé avec succès',
+              message: 'Supprimer la demande',
+              description: 'La demande a été supprimé avec succès',
             });
             dispatch(fetchAllInternshipRequest());
           })
           .catch((err) =>
             notification.error({
-              message: 'Supprimer le stage',
+              message: 'Supprimer la demande',
               description: err.error.message,
             }),
           );
       },
     });
   };
-  console.log('internshipRequests', internshipRequests);
-  console.log('currentUser', currentUser);
   const internshipData = useMemo(() => {
     switch (currentUserRole) {
       case 'intern':
@@ -143,7 +141,6 @@ function MyInternshipRequestPage() {
   ];
 
   const intenshipLength = internships.internships?.length;
-  console.log('internshipData', internshipData);
   return (
     <div>
       {loading ? (
