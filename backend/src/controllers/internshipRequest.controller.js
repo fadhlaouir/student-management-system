@@ -43,7 +43,8 @@ async function getAllInternshipRequest(req, res) {
         path: 'internship',
         populate: [
           // { path: 'company', model: 'Company' },
-          { path: 'supervisor', model: 'User' }, // Assuming 'supervisor' is a direct reference to the User model
+          { path: 'supervisor', model: 'User' },
+          { path: 'manager', model: 'User' }, // Assuming 'supervisor' is a direct reference to the User model
         ],
       });
 
