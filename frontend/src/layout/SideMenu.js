@@ -44,7 +44,8 @@ function SideMenu() {
           { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UserAddOutlined /> },
           { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileOutlined /> },
           { key: '7', path: '/all-requests', name: 'Demandes de stage', icon: <FileOutlined /> },
-          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UserAddOutlined /> },
+          { key: '8', path: '/my-interns', name: 'Mes etudiants', icon: <UserAddOutlined /> },
+          { key: '9', path: '/advancements', name: 'Tache et avancement', icon: <UserAddOutlined /> },
         ];
       case 'intern':
         return [
@@ -52,15 +53,17 @@ function SideMenu() {
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
           { key: '6', path: '/programs', name: 'Liste des stages', icon: <FileOutlined /> },
           { key: '7', path: '/my-requests', name: 'Mes Demandes', icon: <FileOutlined /> },
-          { key: '8', path: '/advancements', name: 'Tache et avancement', icon: <UserAddOutlined /> },
-          { key: '9', path: '/me', name: 'Mes Documents', icon: <UserAddOutlined /> },
+          { key: '8', path: '/my-seniors', name: 'Mes managers et encadrants', icon: <UserAddOutlined /> },
+          { key: '9', path: '/advancements', name: 'Tache et avancement', icon: <UserAddOutlined /> },
+          { key: '10', path: '/me', name: 'Mes Documents', icon: <UserAddOutlined /> },
         ];
       case 'supervisor':
         return [
           { key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> },
           { key: '3', path: '/interns', name: 'Liste des stagiaires', icon: <UserAddOutlined /> },
           { key: '5', path: '/companies', name: 'Liste des sociétés', icon: <ShopOutlined /> },
-          { key: '7', path: '/my-requests', name: 'Mes Stages associe', icon: <FileOutlined /> },
+          { key: '6', path: '/my-requests', name: 'Mes Stages associe', icon: <FileOutlined /> },
+          { key: '7', path: '/my-interns', name: 'Mes etudiants', icon: <UserAddOutlined /> },
         ];
       default:
         return [{ key: '1', path: '/acceuil', name: 'Accueil', icon: <HomeOutlined /> }];
@@ -77,6 +80,7 @@ function SideMenu() {
     history.push(clicked.path);
   };
 
+  // eslint-disable-next-line no-shadow
   const handleCollapse = (collapsed) => {
     setCollapsed(collapsed);
   };
@@ -90,7 +94,7 @@ function SideMenu() {
       breakpoint="lg"
       collapsedWidth="0"
       trigger={null}
-      width={220}
+      width={260}
     >
       <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} selectedKeys={[selectedKey]} onClick={onClickMenu}>
         {routes.map((item) => (

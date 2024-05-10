@@ -21,6 +21,8 @@ import App from './App';
 import InternshipRequestPage from './pages/InternshipRequestPage';
 import AdvancementPage from './pages/AdvancementPage';
 import Profile from './pages/profile';
+import MySeniorsPage from './pages/MySeniorsPage';
+import MyInternsPage from './pages/MyInternsPage';
 
 /* ---------------------------------- CONST --------------------------------- */
 // eslint-disable-next-line consistent-return
@@ -84,6 +86,8 @@ export const renderRoutes = () => (
       <LayoutRoute exact path="/all-requests" component={InternshipRequestPage} layout={App} />
       <LayoutRoute exact path="/advancements" component={AdvancementPage} layout={App} />
       <LayoutRoute exact path="/details/:id" component={Profile} layout={App} />
+      <LayoutRoute exact path="/my-seniors" component={MySeniorsPage} layout={App} />
+      <LayoutRoute exact path="/my-interns" component={MyInternsPage} layout={App} />
       <LayoutRoute exact path="/me" component={Profile} layout={App} />
 
       <Redirect exact from="/" to="/acceuil" />
