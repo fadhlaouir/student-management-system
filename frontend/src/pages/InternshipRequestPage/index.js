@@ -103,7 +103,7 @@ function InternshipRequestPage() {
 
   const INTERNSHIP_DATA =
     InternshipRequestObject &&
-    InternshipRequestObject?.map((request, index) => ({
+    InternshipRequestObject?.filter((rq) => rq.internship.manager._id === currentUser._id).map((request, index) => ({
       key: index,
       _id: request?._id,
       status: request?.status,
@@ -164,7 +164,7 @@ function InternshipRequestPage() {
             </Button>
           </Col>
           <Col className="mr">
-            <Button type="danger" onClick={() => remoreRequest(record)} danger>
+            <Button type="danger" onClick={() => remoreRequest(record)} danger disabled={record.status === 'accepted'}>
               Refuser
             </Button>
           </Col>
